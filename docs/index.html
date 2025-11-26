@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI-powered meeting assistant for summarizing meetings, extracting action items, and generating agendas. Supports OpenAI, Ollama, and Anthropic Claude.">
+    <meta name="keywords" content="meeting assistant, AI, meeting summary, action items, agenda generator, meeting notes, OpenAI, Ollama, Claude, transcript analysis">
+    <meta name="author" content="yoon-k">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="AI Meeting Assistant - Smart Meeting Management">
+    <meta property="og:description" content="Summarize meetings, extract action items, and generate agendas with AI. Supports multiple LLM providers.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://yoon-k.github.io/openwebui-meeting-assistant/">
+    <meta name="twitter:card" content="summary_large_image">
+    <title>AI Meeting Assistant | OpenWebUI + LLM Demo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #8b5cf6;
+            --primary-dark: #7c3aed;
+            --secondary: #06b6d4;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-input: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border: #475569;
+            --radius: 12px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        .header {
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-dark));
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .logo-icon { font-size: 1.75rem; }
+        .logo h1 {
+            font-size: 1.25rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .lang-selector {
+            display: flex;
+            gap: 0.25rem;
+            background: var(--bg-input);
+            padding: 0.25rem;
+            border-radius: 8px;
+        }
+        .lang-btn {
+            padding: 0.375rem 0.75rem;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+        .lang-btn:hover { color: var(--text-primary); }
+        .lang-btn.active { background: var(--primary); color: white; }
+        .main-container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .hero { text-align: center; padding: 3rem 1rem; }
+        .demo-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: rgba(139, 92, 246, 0.2);
+            border: 1px solid var(--primary);
+            border-radius: 20px;
+            color: var(--primary);
+            font-size: 0.875rem;
+        }
+        .hero h2 {
+            font-size: 2.5rem;
+            margin: 1rem 0;
+            background: linear-gradient(135deg, var(--text-primary), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero p {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            transition: transform 0.2s;
+        }
+        .feature-card:hover { transform: translateY(-4px); }
+        .feature-icon { font-size: 2rem; margin-bottom: 1rem; }
+        .feature-card h3 { font-size: 1.125rem; margin-bottom: 0.5rem; }
+        .feature-card p { color: var(--text-secondary); font-size: 0.875rem; }
+        .demo-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        .demo-section h3 { font-size: 1.25rem; margin-bottom: 1.5rem; text-align: center; }
+        .demo-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        @media (max-width: 768px) { .demo-grid { grid-template-columns: 1fr; } }
+        .demo-panel {
+            background: var(--bg-dark);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+        .demo-panel h4 {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+        }
+        .transcript-preview {
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+        .transcript-preview .speaker { color: var(--primary); font-weight: 500; }
+        .action-item {
+            padding: 0.75rem;
+            background: var(--bg-card);
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+            border-left: 3px solid var(--primary);
+        }
+        .action-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.25rem;
+        }
+        .action-title { font-size: 0.875rem; font-weight: 500; }
+        .priority-badge {
+            padding: 0.125rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .priority-badge.high { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        .priority-badge.medium { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+        .action-meta { font-size: 0.75rem; color: var(--text-secondary); }
+        .providers {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+        .provider {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+        .provider-logo { font-size: 1.5rem; }
+        .quick-start {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        .quick-start h3 { font-size: 1.25rem; margin-bottom: 1rem; }
+        .code-block {
+            background: var(--bg-dark);
+            border-radius: 8px;
+            padding: 1rem;
+            overflow-x: auto;
+        }
+        .code-block code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8125rem;
+            color: var(--secondary);
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); }
+        .btn-secondary { background: var(--bg-input); color: var(--text-primary); border: 1px solid var(--border); }
+        .cta-buttons { display: flex; justify-content: center; gap: 1rem; margin: 2rem 0; flex-wrap: wrap; }
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            border-top: 1px solid var(--border);
+            margin-top: 3rem;
+        }
+        footer a { color: var(--primary); text-decoration: none; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <span class="logo-icon">📅</span>
+                <h1 id="title">AI Meeting Assistant</h1>
+            </div>
+            <div class="lang-selector">
+                <button class="lang-btn active" onclick="setLanguage('en')">EN</button>
+                <button class="lang-btn" onclick="setLanguage('ko')">KO</button>
+                <button class="lang-btn" onclick="setLanguage('ja')">JA</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <section class="hero">
+            <span class="demo-badge" id="demoBadge">Live Demo</span>
+            <h2 id="heroTitle">Smart Meeting Management</h2>
+            <p id="heroDesc">Transform your meetings with AI-powered summaries, automatic action item extraction, and intelligent agenda generation.</p>
+        </section>
+
+        <div class="providers">
+            <div class="provider"><span class="provider-logo">🤖</span><span>OpenAI GPT-4</span></div>
+            <div class="provider"><span class="provider-logo">🦙</span><span>Ollama (Local)</span></div>
+            <div class="provider"><span class="provider-logo">🧠</span><span>Anthropic Claude</span></div>
+        </div>
+
+        <section class="features" id="features">
+            <div class="feature-card">
+                <div class="feature-icon">📝</div>
+                <h3 id="feat1Title">Meeting Summarization</h3>
+                <p id="feat1Desc">Automatically summarize meeting transcripts into concise, actionable summaries.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">✅</div>
+                <h3 id="feat2Title">Action Item Extraction</h3>
+                <p id="feat2Desc">Identify and extract action items with assignees, deadlines, and priorities.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📋</div>
+                <h3 id="feat3Title">Agenda Generation</h3>
+                <p id="feat3Desc">Create professional meeting agendas based on topics, goals, and participants.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💬</div>
+                <h3 id="feat4Title">Interactive Chat</h3>
+                <p id="feat4Desc">Ask questions about your meetings and get instant, contextual answers.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📅</div>
+                <h3 id="feat5Title">Calendar Export</h3>
+                <p id="feat5Desc">Export meetings and follow-ups directly to your calendar in ICS format.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🌐</div>
+                <h3 id="feat6Title">Multi-language</h3>
+                <p id="feat6Desc">Full support for English, Korean, and Japanese interfaces.</p>
+            </div>
+        </section>
+
+        <section class="demo-section">
+            <h3 id="demoTitle">See It In Action</h3>
+            <div class="demo-grid">
+                <div class="demo-panel">
+                    <h4 id="inputLabel">Meeting Transcript</h4>
+                    <div class="transcript-preview">
+                        <p><span class="speaker">John:</span> Let's discuss the Q4 roadmap.</p>
+                        <p><span class="speaker">Sarah:</span> I think we should prioritize the mobile app.</p>
+                        <p><span class="speaker">John:</span> Good point. Let's aim for launch by November.</p>
+                        <p><span class="speaker">Sarah:</span> I'll prepare the technical spec by Friday.</p>
+                    </div>
+                </div>
+                <div class="demo-panel">
+                    <h4 id="outputLabel">Extracted Action Items</h4>
+                    <div class="action-item">
+                        <div class="action-header">
+                            <span class="action-title" id="action1">Prepare technical spec for mobile app</span>
+                            <span class="priority-badge high" id="priority1">HIGH</span>
+                        </div>
+                        <div class="action-meta">👤 Sarah • 📅 Friday</div>
+                    </div>
+                    <div class="action-item">
+                        <div class="action-header">
+                            <span class="action-title" id="action2">Mobile app launch planning</span>
+                            <span class="priority-badge medium" id="priority2">MEDIUM</span>
+                        </div>
+                        <div class="action-meta">👤 Team • 📅 November</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="quick-start">
+            <h3 id="quickStartTitle">Quick Start</h3>
+            <div class="code-block">
+                <code>
+git clone https://github.com/yoon-k/openwebui-meeting-assistant.git<br>
+cd openwebui-meeting-assistant<br>
+pip install -r requirements.txt<br>
+cp .env.example .env<br>
+python -m app.api
+                </code>
+            </div>
+        </section>
+
+        <div class="cta-buttons">
+            <a href="https://github.com/yoon-k/openwebui-meeting-assistant" class="btn btn-primary" id="viewGithub">📦 View on GitHub</a>
+            <a href="#features" class="btn btn-secondary" id="learnMore">📖 Learn More</a>
+        </div>
+    </main>
+
+    <footer>
+        <p id="footerText">Built with Flask + LangChain | Supports OpenAI, Ollama, Anthropic<br>
+        <a href="https://github.com/yoon-k">GitHub</a> • MIT License</p>
+    </footer>
+
+    <script>
+        const i18n = {
+            en: {
+                title: "AI Meeting Assistant",
+                demoBadge: "Live Demo",
+                heroTitle: "Smart Meeting Management",
+                heroDesc: "Transform your meetings with AI-powered summaries, automatic action item extraction, and intelligent agenda generation.",
+                feat1Title: "Meeting Summarization", feat1Desc: "Automatically summarize meeting transcripts into concise, actionable summaries.",
+                feat2Title: "Action Item Extraction", feat2Desc: "Identify and extract action items with assignees, deadlines, and priorities.",
+                feat3Title: "Agenda Generation", feat3Desc: "Create professional meeting agendas based on topics, goals, and participants.",
+                feat4Title: "Interactive Chat", feat4Desc: "Ask questions about your meetings and get instant, contextual answers.",
+                feat5Title: "Calendar Export", feat5Desc: "Export meetings and follow-ups directly to your calendar in ICS format.",
+                feat6Title: "Multi-language", feat6Desc: "Full support for English, Korean, and Japanese interfaces.",
+                demoTitle: "See It In Action", inputLabel: "Meeting Transcript", outputLabel: "Extracted Action Items",
+                action1: "Prepare technical spec for mobile app", priority1: "HIGH",
+                action2: "Mobile app launch planning", priority2: "MEDIUM",
+                quickStartTitle: "Quick Start", viewGithub: "View on GitHub", learnMore: "Learn More",
+                footerText: "Built with Flask + LangChain | Supports OpenAI, Ollama, Anthropic"
+            },
+            ko: {
+                title: "AI 회의 도우미",
+                demoBadge: "라이브 데모",
+                heroTitle: "스마트 회의 관리",
+                heroDesc: "AI 기반 요약, 자동 액션 아이템 추출, 지능형 안건 생성으로 회의를 혁신하세요.",
+                feat1Title: "회의 요약", feat1Desc: "회의 녹취록을 간결하고 실행 가능한 요약으로 자동 변환합니다.",
+                feat2Title: "액션 아이템 추출", feat2Desc: "담당자, 마감일, 우선순위가 포함된 액션 아이템을 식별하고 추출합니다.",
+                feat3Title: "안건 생성", feat3Desc: "주제, 목표, 참석자를 기반으로 전문적인 회의 안건을 생성합니다.",
+                feat4Title: "대화형 채팅", feat4Desc: "회의에 대해 질문하고 즉각적인 맥락 기반 답변을 받으세요.",
+                feat5Title: "캘린더 내보내기", feat5Desc: "회의와 후속 조치를 ICS 형식으로 캘린더에 직접 내보냅니다.",
+                feat6Title: "다국어 지원", feat6Desc: "영어, 한국어, 일본어 인터페이스를 완벽 지원합니다.",
+                demoTitle: "실제 동작 보기", inputLabel: "회의 녹취록", outputLabel: "추출된 액션 아이템",
+                action1: "모바일 앱 기술 스펙 준비", priority1: "높음",
+                action2: "모바일 앱 출시 계획", priority2: "보통",
+                quickStartTitle: "빠른 시작", viewGithub: "GitHub에서 보기", learnMore: "자세히 알아보기",
+                footerText: "Flask + LangChain으로 제작 | OpenAI, Ollama, Anthropic 지원"
+            },
+            ja: {
+                title: "AIミーティングアシスタント",
+                demoBadge: "ライブデモ",
+                heroTitle: "スマートミーティング管理",
+                heroDesc: "AI搭載の要約、自動アクションアイテム抽出、インテリジェントなアジェンダ生成でミーティングを変革します。",
+                feat1Title: "会議要約", feat1Desc: "会議の議事録を簡潔で実用的な要約に自動変換します。",
+                feat2Title: "アクションアイテム抽出", feat2Desc: "担当者、期限、優先度を含むアクションアイテムを特定・抽出します。",
+                feat3Title: "アジェンダ生成", feat3Desc: "トピック、目標、参加者に基づいてプロフェッショナルな会議アジェンダを作成します。",
+                feat4Title: "インタラクティブチャット", feat4Desc: "会議について質問し、即座にコンテキストに基づいた回答を得られます。",
+                feat5Title: "カレンダーエクスポート", feat5Desc: "会議とフォローアップをICS形式でカレンダーに直接エクスポートします。",
+                feat6Title: "多言語対応", feat6Desc: "英語、韓国語、日本語のインターフェースを完全サポート。",
+                demoTitle: "実際の動作を見る", inputLabel: "会議議事録", outputLabel: "抽出されたアクションアイテム",
+                action1: "モバイルアプリの技術仕様を準備", priority1: "高",
+                action2: "モバイルアプリローンチ計画", priority2: "中",
+                quickStartTitle: "クイックスタート", viewGithub: "GitHubで見る", learnMore: "詳細を見る",
+                footerText: "Flask + LangChainで構築 | OpenAI、Ollama、Anthropicをサポート"
+            }
+        };
+
+        function setLanguage(lang) {
+            const t = i18n[lang];
+            document.getElementById('title').textContent = t.title;
+            document.getElementById('demoBadge').textContent = t.demoBadge;
+            document.getElementById('heroTitle').textContent = t.heroTitle;
+            document.getElementById('heroDesc').textContent = t.heroDesc;
+            document.getElementById('feat1Title').textContent = t.feat1Title;
+            document.getElementById('feat1Desc').textContent = t.feat1Desc;
+            document.getElementById('feat2Title').textContent = t.feat2Title;
+            document.getElementById('feat2Desc').textContent = t.feat2Desc;
+            document.getElementById('feat3Title').textContent = t.feat3Title;
+            document.getElementById('feat3Desc').textContent = t.feat3Desc;
+            document.getElementById('feat4Title').textContent = t.feat4Title;
+            document.getElementById('feat4Desc').textContent = t.feat4Desc;
+            document.getElementById('feat5Title').textContent = t.feat5Title;
+            document.getElementById('feat5Desc').textContent = t.feat5Desc;
+            document.getElementById('feat6Title').textContent = t.feat6Title;
+            document.getElementById('feat6Desc').textContent = t.feat6Desc;
+            document.getElementById('demoTitle').textContent = t.demoTitle;
+            document.getElementById('inputLabel').textContent = t.inputLabel;
+            document.getElementById('outputLabel').textContent = t.outputLabel;
+            document.getElementById('action1').textContent = t.action1;
+            document.getElementById('priority1').textContent = t.priority1;
+            document.getElementById('action2').textContent = t.action2;
+            document.getElementById('priority2').textContent = t.priority2;
+            document.getElementById('quickStartTitle').textContent = t.quickStartTitle;
+            document.getElementById('viewGithub').innerHTML = `📦 ${t.viewGithub}`;
+            document.getElementById('learnMore').innerHTML = `📖 ${t.learnMore}`;
+            document.getElementById('footerText').innerHTML = `${t.footerText}<br><a href="https://github.com/yoon-k">GitHub</a> • MIT License`;
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.toggle('active', btn.textContent === lang.toUpperCase()));
+        }
+    </script>
+</body>
+</html>

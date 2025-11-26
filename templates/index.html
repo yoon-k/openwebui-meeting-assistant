@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI-powered meeting assistant for summarizing meetings, extracting action items, and generating agendas. Supports OpenAI, Ollama, and Anthropic.">
+    <meta name="keywords" content="meeting assistant, AI, meeting summary, action items, agenda generator, OpenAI, Ollama, Claude">
+    <title>AI Meeting Assistant | OpenWebUI + LLM</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <span class="logo-icon">📅</span>
+                <h1 id="title">AI Meeting Assistant</h1>
+            </div>
+            <div class="lang-selector">
+                <button class="lang-btn active" data-lang="en" onclick="setLanguage('en')">EN</button>
+                <button class="lang-btn" data-lang="ko" onclick="setLanguage('ko')">KO</button>
+                <button class="lang-btn" data-lang="ja" onclick="setLanguage('ja')">JA</button>
+            </div>
+        </div>
+        <p id="subtitle" style="text-align: center; color: var(--text-secondary); font-size: 0.875rem; margin-top: 0.5rem;">
+            Summarize meetings, extract action items, generate agendas
+        </p>
+    </header>
+
+    <main class="main-container">
+        <!-- Input Panel -->
+        <div class="panel">
+            <div class="panel-header">
+                <span class="panel-title" id="inputPanelTitle">MEETING INPUT</span>
+                <div class="tabs">
+                    <button class="tab active" data-tab="summarize" id="tabSummarize" onclick="showTab('summarize')">Summarize</button>
+                    <button class="tab" data-tab="agenda" id="tabAgenda" onclick="showTab('agenda')">Agenda</button>
+                    <button class="tab" data-tab="chat" id="tabChat" onclick="showTab('chat')">Chat</button>
+                </div>
+            </div>
+            <div class="panel-body">
+                <!-- Summarize Form -->
+                <div id="summarizeForm">
+                    <div class="form-group">
+                        <textarea id="transcriptEditor" class="transcript-editor" placeholder="Paste your meeting transcript..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" id="meetingTypeLabel">Meeting Type</label>
+                        <select id="meetingTypeSelect" class="form-select"></select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" id="participantsLabel">Participants</label>
+                        <input type="text" id="participantsInput" class="form-input" placeholder="Enter names separated by commas">
+                    </div>
+                    <button id="summarizeBtn" class="btn btn-primary" style="width: 100%;" onclick="summarizeMeeting()">
+                        <span>📝</span>
+                        <span id="summarizeBtnText">Summarize Meeting</span>
+                    </button>
+                </div>
+
+                <!-- Agenda Form -->
+                <div id="agendaForm" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label" id="topicLabel">Meeting Topic</label>
+                        <input type="text" id="topicInput" class="form-input" placeholder="Enter the main topic">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Meeting Type</label>
+                        <select id="agendaMeetingType" class="form-select"></select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" id="durationLabel">Duration (minutes)</label>
+                        <input type="number" id="durationInput" class="form-input" value="60" min="15" max="480">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" id="goalsLabel">Meeting Goals</label>
+                        <input type="text" id="goalsInput" class="form-input" placeholder="Enter goals separated by commas">
+                    </div>
+                    <button id="generateAgendaBtn" class="btn btn-primary" style="width: 100%;" onclick="generateAgenda()">
+                        <span>📋</span>
+                        <span id="generateAgendaBtnText">Generate Agenda</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Panel -->
+        <div class="panel">
+            <div class="panel-header">
+                <span class="panel-title" id="resultsPanelTitle">RESULTS</span>
+            </div>
+            <div class="panel-body" id="resultsContainer">
+                <div class="empty-state">
+                    <div class="empty-state-icon">📝</div>
+                    <h3>No Results Yet</h3>
+                    <p>Enter your meeting content and click the button to get started</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Hidden elements for i18n -->
+    <input type="hidden" id="chatInput" placeholder="Ask about meetings...">
+    <span id="sendBtnText" style="display:none;">Send</span>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
