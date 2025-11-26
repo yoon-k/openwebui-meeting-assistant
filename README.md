@@ -4,6 +4,22 @@
 
 **[Live Demo](https://yoon-k.github.io/openwebui-meeting-assistant/)** | [한국어](#한국어) | [日本語](#日本語)
 
+---
+
+## 📚 About This Project
+
+> **🎓 Reference & Study Project**
+>
+> This project is created for **learning and reference purposes**. It's a "**Fullstack with AI**" collaboration project - not built by a traditional fullstack developer, but through partnership with AI assistance.
+>
+> Use this as a reference for:
+> - NLP-based text summarization
+> - Entity extraction from unstructured text
+> - Calendar integration (ICS format)
+> - Meeting workflow automation
+
+---
+
 ## Overview
 
 AI Meeting Assistant is a production-ready tool that leverages Large Language Models to transform how you handle meetings. From summarizing transcripts to extracting action items and generating agendas, it automates the tedious parts of meeting management.
@@ -216,11 +232,136 @@ docker-compose up -d
 
 ---
 
+---
+
+## 🔬 Technical Study Guide
+
+### Key Technologies Explained
+
+#### 1. Text Summarization with LLMs
+LLMs excel at understanding context and extracting key information from text.
+
+```python
+async def summarize_transcript(self, transcript: str, meeting_type: str) -> dict:
+    system_prompt = """You are a meeting analyst. Summarize the transcript and extract:
+    - Key discussion points
+    - Decisions made
+    - Action items with assignees"""
+
+    response = await self.provider.generate(
+        messages=[{"role": "user", "content": transcript}],
+        system=system_prompt
+    )
+    return parse_summary_response(response)
+```
+
+**Key Concepts:**
+- **Prompt Engineering**: Structuring prompts to guide LLM output
+- **JSON Response Parsing**: Extracting structured data from text
+- **Context Window Management**: Handling long transcripts
+
+#### 2. Entity Extraction
+Identifying specific entities (people, dates, tasks) from unstructured text.
+
+```python
+class ActionItem(BaseModel):
+    title: str
+    assignee: Optional[str] = None
+    due_date: Optional[datetime] = None
+    priority: Priority = Priority.MEDIUM
+
+    @validator('due_date', pre=True)
+    def parse_date(cls, v):
+        if isinstance(v, str):
+            return dateutil.parser.parse(v)
+        return v
+```
+
+**Pattern Recognition:**
+- Named Entity Recognition (NER) concepts
+- Date/time parsing
+- Priority classification
+
+#### 3. ICS Calendar Format
+The iCalendar standard (RFC 5545) for calendar data exchange.
+
+```python
+from icalendar import Calendar, Event
+from datetime import datetime, timedelta
+
+def create_ics_event(title, start, duration_minutes, description):
+    cal = Calendar()
+    cal.add('prodid', '-//Meeting Assistant//EN')
+    cal.add('version', '2.0')
+
+    event = Event()
+    event.add('summary', title)
+    event.add('dtstart', start)
+    event.add('dtend', start + timedelta(minutes=duration_minutes))
+    event.add('description', description)
+    event.add('uid', str(uuid.uuid4()))
+
+    cal.add_component(event)
+    return cal.to_ical()
+```
+
+**ICS Structure:**
+- `VCALENDAR`: Container for events
+- `VEVENT`: Individual event
+- `DTSTART/DTEND`: Start and end times
+- `UID`: Unique identifier
+
+#### 4. Meeting Type Classification
+Different meeting types require different summarization approaches.
+
+```python
+MEETING_PROMPTS = {
+    "standup": "Focus on: blockers, progress, plans for today",
+    "planning": "Focus on: goals, timelines, resource allocation",
+    "retrospective": "Focus on: what went well, improvements, action items",
+    "brainstorm": "Focus on: ideas generated, evaluation criteria, next steps"
+}
+
+def get_summarization_prompt(meeting_type: str) -> str:
+    base_prompt = "Summarize this meeting transcript."
+    specific = MEETING_PROMPTS.get(meeting_type, "")
+    return f"{base_prompt} {specific}"
+```
+
+#### 5. Real-time Processing Architecture
+Handling long transcripts efficiently.
+
+```python
+async def process_long_transcript(transcript: str, chunk_size: int = 4000):
+    # Split into manageable chunks
+    chunks = [transcript[i:i+chunk_size] for i in range(0, len(transcript), chunk_size)]
+
+    # Process chunks in parallel
+    summaries = await asyncio.gather(*[
+        summarize_chunk(chunk) for chunk in chunks
+    ])
+
+    # Merge summaries
+    return merge_summaries(summaries)
+```
+
+### Learning Path Recommendations
+
+1. **Beginner**: Understand text processing and API basics
+2. **Intermediate**: Implement entity extraction and ICS export
+3. **Advanced**: Add real-time transcription support
+4. **Expert**: Build multi-language translation and team analytics
+
+---
+
 ## License
 
 MIT License
 
-## Support
+## Author
 
-- 📧 Issues: [GitHub Issues](https://github.com/yoon-k/openwebui-meeting-assistant/issues)
-- 📖 Docs: [GitHub Pages](https://yoon-k.github.io/openwebui-meeting-assistant/)
+**yoon-k** - [GitHub Profile](https://github.com/yoon-k)
+
+---
+
+⭐ If this project helps you learn, please give it a star!
