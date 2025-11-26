@@ -17,6 +17,8 @@
 > - Entity extraction from unstructured text
 > - Calendar integration (ICS format)
 > - Meeting workflow automation
+>
+> 🚀 **Continuous Improvement**: This project is under active development with ongoing enhancements planned.
 
 ---
 
