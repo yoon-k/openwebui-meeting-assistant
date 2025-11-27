@@ -3,12 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="AI-powered meeting assistant for summarizing meetings, extracting action items, and generating agendas. Supports OpenAI, Ollama, and Anthropic.">
-    <meta name="keywords" content="meeting assistant, AI, meeting summary, action items, agenda generator, OpenAI, Ollama, Claude">
+    <meta name="description" content="AI-powered meeting assistant for summarizing meetings, extracting action items, and generating agendas. Supports 7 languages and multiple LLM providers.">
+    <meta name="keywords" content="meeting assistant, AI, meeting summary, action items, agenda generator, OpenAI, Ollama, Claude, OpenWebUI">
+    <meta name="author" content="yoon-k">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="AI Meeting Assistant | OpenWebUI + LLM">
+    <meta property="og:description" content="AI-powered meeting assistant with instant summaries and agenda generation">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
     <title>AI Meeting Assistant | OpenWebUI + LLM</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E📅%3C/text%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
@@ -16,31 +23,36 @@
         <div class="header-content">
             <div class="logo">
                 <span class="logo-icon">📅</span>
-                <h1 id="title">AI Meeting Assistant</h1>
+                <div>
+                    <h1 id="title">AI Meeting Assistant</h1>
+                    <p id="subtitle" class="logo-subtitle">Summarize meetings, extract action items, generate agendas</p>
+                </div>
             </div>
             <div class="lang-selector">
                 <button class="lang-btn active" data-lang="en" onclick="setLanguage('en')">EN</button>
-                <button class="lang-btn" data-lang="ko" onclick="setLanguage('ko')">KO</button>
-                <button class="lang-btn" data-lang="ja" onclick="setLanguage('ja')">JA</button>
+                <button class="lang-btn" data-lang="ko" onclick="setLanguage('ko')">한국어</button>
+                <button class="lang-btn" data-lang="ja" onclick="setLanguage('ja')">日本語</button>
+                <button class="lang-btn" data-lang="zh" onclick="setLanguage('zh')">中文</button>
+                <button class="lang-btn" data-lang="es" onclick="setLanguage('es')">ES</button>
+                <button class="lang-btn" data-lang="fr" onclick="setLanguage('fr')">FR</button>
+                <button class="lang-btn" data-lang="de" onclick="setLanguage('de')">DE</button>
             </div>
         </div>
-        <p id="subtitle" style="text-align: center; color: var(--text-secondary); font-size: 0.875rem; margin-top: 0.5rem;">
-            Summarize meetings, extract action items, generate agendas
-        </p>
     </header>
 
     <main class="main-container">
         <!-- Input Panel -->
-        <div class="panel">
+        <div class="panel sidebar-panel">
             <div class="panel-header">
                 <span class="panel-title" id="inputPanelTitle">MEETING INPUT</span>
-                <div class="tabs">
-                    <button class="tab active" data-tab="summarize" id="tabSummarize" onclick="showTab('summarize')">Summarize</button>
-                    <button class="tab" data-tab="agenda" id="tabAgenda" onclick="showTab('agenda')">Agenda</button>
-                    <button class="tab" data-tab="chat" id="tabChat" onclick="showTab('chat')">Chat</button>
-                </div>
             </div>
             <div class="panel-body">
+                <div class="tabs input-tabs">
+                    <button class="tab active" data-tab="summarize" id="tabSummarize" onclick="showTab('summarize')">Summarize</button>
+                    <button class="tab" data-tab="agenda" id="tabAgenda" onclick="showTab('agenda')">Agenda</button>
+                    <button class="tab" data-tab="templates" id="tabTemplates" onclick="showTab('templates')">Templates</button>
+                </div>
+
                 <!-- Summarize Form -->
                 <div id="summarizeForm">
                     <div class="form-group">
@@ -54,7 +66,7 @@
                         <label class="form-label" id="participantsLabel">Participants</label>
                         <input type="text" id="participantsInput" class="form-input" placeholder="Enter names separated by commas">
                     </div>
-                    <button id="summarizeBtn" class="btn btn-primary" style="width: 100%;" onclick="summarizeMeeting()">
+                    <button id="summarizeBtn" class="btn btn-primary btn-full" onclick="summarizeMeeting()">
                         <span>📝</span>
                         <span id="summarizeBtnText">Summarize Meeting</span>
                     </button>
@@ -78,18 +90,31 @@
                         <label class="form-label" id="goalsLabel">Meeting Goals</label>
                         <input type="text" id="goalsInput" class="form-input" placeholder="Enter goals separated by commas">
                     </div>
-                    <button id="generateAgendaBtn" class="btn btn-primary" style="width: 100%;" onclick="generateAgenda()">
+                    <button id="generateAgendaBtn" class="btn btn-primary btn-full" onclick="generateAgenda()">
                         <span>📋</span>
                         <span id="generateAgendaBtnText">Generate Agenda</span>
                     </button>
+                </div>
+
+                <!-- Templates Form -->
+                <div id="templatesForm" style="display: none;">
+                    <div class="templates-mini">
+                        <p class="templates-hint">Select a template to quickly set up your meeting</p>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Results Panel -->
-        <div class="panel">
+        <div class="panel main-panel">
             <div class="panel-header">
                 <span class="panel-title" id="resultsPanelTitle">RESULTS</span>
+                <div class="tabs">
+                    <button class="tab active" data-tab="summarize" onclick="showTab('summarize')">📝</button>
+                    <button class="tab" data-tab="agenda" onclick="showTab('agenda')">📋</button>
+                    <button class="tab" data-tab="chat" id="tabChat" onclick="showTab('chat')">💬</button>
+                    <button class="tab" data-tab="history" id="tabHistory" onclick="showTab('history')">📜</button>
+                </div>
             </div>
             <div class="panel-body" id="resultsContainer">
                 <div class="empty-state">
