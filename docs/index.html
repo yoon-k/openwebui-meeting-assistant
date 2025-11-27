@@ -9,7 +9,7 @@
     <meta property="og:title" content="AI Meeting Assistant | OpenWebUI + LLM">
     <meta property="og:description" content="AI-powered meeting assistant with instant summaries and agenda generation">
     <meta property="og:type" content="website">
-    <title>AI Meeting Assistant | Demo</title>
+    <title>AI Meeting Assistant | Interactive Demo</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E📅%3C/text%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -46,46 +46,17 @@
             background: var(--bg-primary);
             color: var(--text-primary);
             line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        .bg-animation {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .bg-animation::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at 30% 30%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
-                        radial-gradient(circle at 70% 70%, rgba(99, 102, 241, 0.06) 0%, transparent 50%);
-            animation: bgMove 20s ease-in-out infinite;
-        }
-
-        @keyframes bgMove {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            50% { transform: translate(2%, 2%) rotate(2deg); }
+            min-height: 100vh;
         }
 
         .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            background: rgba(10, 10, 15, 0.9);
+            background: rgba(10, 10, 15, 0.95);
             backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border-color);
             padding: 16px 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .header-content {
@@ -94,31 +65,116 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 12px;
         }
 
-        .logo-icon {
-            font-size: 2.5rem;
-            filter: drop-shadow(0 0 10px rgba(139, 92, 246, 0.5));
-        }
+        .logo-icon { font-size: 2rem; }
 
         .logo h1 {
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             font-weight: 700;
             background: var(--gradient-primary);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .logo-subtitle {
-            font-size: 0.8rem;
-            color: var(--text-muted);
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
         }
+
+        .api-connection {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .api-input {
+            padding: 8px 12px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            width: 200px;
+        }
+
+        .api-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            box-shadow: var(--shadow-glow);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-primary);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--error);
+            color: white;
+        }
+
+        .connection-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--text-muted);
+        }
+
+        .status-dot.connected { background: var(--success); }
+        .status-dot.simulation { background: var(--warning); }
 
         .lang-selector {
             display: flex;
@@ -148,1228 +204,1614 @@
             color: white;
         }
 
-        .hero {
-            position: relative;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 120px 24px 80px;
-            text-align: center;
-            z-index: 1;
-        }
-
-        .hero-content { max-width: 900px; }
-
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
-            border-radius: 50px;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin-bottom: 32px;
-        }
-
-        .hero-badge-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--success);
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(1.2); }
-        }
-
-        .hero h1 {
-            font-size: clamp(2.5rem, 6vw, 4.5rem);
-            font-weight: 700;
-            line-height: 1.1;
-            margin-bottom: 24px;
-        }
-
-        .hero h1 span {
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .hero-description {
-            font-size: 1.25rem;
-            color: var(--text-secondary);
-            max-width: 600px;
-            margin: 0 auto 48px;
-        }
-
-        .hero-buttons {
-            display: flex;
-            gap: 16px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            padding: 14px 32px;
-            border-radius: var(--radius-md);
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-primary {
-            background: var(--gradient-primary);
-            color: white;
-            border: none;
-            box-shadow: var(--shadow-glow);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 60px rgba(139, 92, 246, 0.4);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: var(--text-primary);
-            border: 1px solid var(--border-color);
-        }
-
-        .btn-secondary:hover {
-            background: var(--bg-tertiary);
-            border-color: var(--accent-primary);
-        }
-
-        .stats-bar {
-            display: flex;
-            justify-content: center;
-            gap: 48px;
-            margin-top: 80px;
-            padding: 32px;
-            background: var(--bg-secondary);
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--border-color);
-        }
-
-        .stat-item { text-align: center; }
-
-        .stat-value {
-            font-size: 2rem;
-            font-weight: 700;
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .stat-label {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-top: 4px;
-        }
-
-        .features {
-            position: relative;
-            padding: 120px 24px;
-            z-index: 1;
-        }
-
-        .section-header {
-            text-align: center;
-            max-width: 700px;
-            margin: 0 auto 64px;
-        }
-
-        .section-tag {
-            display: inline-block;
-            padding: 6px 16px;
-            background: var(--gradient-glow);
-            border-radius: 50px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--accent-primary);
-            margin-bottom: 16px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .section-header h2 {
-            font-size: clamp(2rem, 4vw, 3rem);
-            font-weight: 700;
-            margin-bottom: 16px;
-        }
-
-        .section-header p {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-        }
-
-        .features-grid {
-            max-width: 1200px;
+        .main-container {
+            max-width: 1400px;
             margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 24px;
-        }
-
-        .feature-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            padding: 32px;
-            transition: all 0.3s;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--accent-primary);
-            box-shadow: var(--shadow-glow);
-        }
-
-        .feature-icon {
-            width: 56px;
-            height: 56px;
-            background: var(--gradient-glow);
-            border-radius: var(--radius-md);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            margin-bottom: 20px;
-        }
-
-        .feature-card h3 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 12px;
-        }
-
-        .feature-card p {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-        }
-
-        .templates {
-            position: relative;
-            padding: 120px 24px;
-            background: var(--bg-secondary);
-            z-index: 1;
-        }
-
-        .templates-grid {
-            max-width: 1000px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-        }
-
-        .template-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
             padding: 24px;
-            text-align: center;
-            transition: all 0.3s;
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            gap: 24px;
+            min-height: calc(100vh - 80px);
         }
 
-        .template-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--accent-primary);
-            box-shadow: var(--shadow-glow);
-        }
-
-        .template-icon {
-            font-size: 2.5rem;
-            margin-bottom: 12px;
-        }
-
-        .template-name {
-            font-size: 0.95rem;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .template-duration {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-
-        .demo {
-            position: relative;
-            padding: 120px 24px;
-            z-index: 1;
-        }
-
-        .demo-window {
-            max-width: 1200px;
-            margin: 0 auto;
+        .panel {
             background: var(--bg-secondary);
             border: 1px solid var(--border-color);
-            border-radius: var(--radius-xl);
+            border-radius: var(--radius-lg);
             overflow: hidden;
-            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
         }
 
-        .demo-header {
-            display: flex;
-            align-items: center;
-            padding: 16px 24px;
+        .panel-header {
+            padding: 16px 20px;
             background: var(--bg-tertiary);
             border-bottom: 1px solid var(--border-color);
-        }
-
-        .demo-dots {
             display: flex;
-            gap: 8px;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .demo-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
+        .panel-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
         }
 
-        .demo-dot.red { background: #ff5f57; }
-        .demo-dot.yellow { background: #ffbd2e; }
-        .demo-dot.green { background: #28ca41; }
-
-        .demo-title {
+        .panel-body {
+            padding: 20px;
             flex: 1;
-            text-align: center;
-            font-size: 0.85rem;
-            color: var(--text-muted);
+            overflow-y: auto;
         }
 
-        .demo-content {
-            display: grid;
-            grid-template-columns: 350px 1fr;
-            min-height: 500px;
-        }
-
-        .demo-sidebar {
-            background: var(--bg-card);
-            border-right: 1px solid var(--border-color);
-            padding: 24px;
-        }
-
-        .demo-tabs {
+        .tabs {
             display: flex;
-            gap: 8px;
-            margin-bottom: 20px;
+            gap: 4px;
         }
 
-        .demo-tab {
-            flex: 1;
-            padding: 10px;
-            background: var(--bg-primary);
+        .tab {
+            padding: 8px 16px;
+            background: transparent;
             border: 1px solid var(--border-color);
             color: var(--text-secondary);
             border-radius: var(--radius-sm);
-            font-size: 0.85rem;
             cursor: pointer;
+            font-size: 0.85rem;
             transition: all 0.2s;
         }
 
-        .demo-tab.active {
+        .tab:hover {
+            border-color: var(--accent-primary);
+            color: var(--text-primary);
+        }
+
+        .tab.active {
             background: var(--gradient-primary);
             border-color: transparent;
             color: white;
         }
 
-        .demo-textarea {
-            width: 100%;
-            height: 200px;
-            background: var(--bg-primary);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            color: var(--text-primary);
-            padding: 16px;
-            font-family: inherit;
-            font-size: 0.85rem;
-            resize: none;
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
             margin-bottom: 16px;
         }
 
-        .demo-btn {
+        .form-label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .form-input, .form-select, .form-textarea {
             width: 100%;
             padding: 12px;
-            background: var(--gradient-primary);
-            border: none;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
             border-radius: var(--radius-sm);
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.9rem;
         }
 
-        .demo-main {
-            padding: 24px;
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--accent-primary);
         }
 
-        .demo-result {
+        .form-textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .form-select option {
+            background: var(--bg-secondary);
+        }
+
+        .btn-full {
+            width: 100%;
+            padding: 14px;
+            font-size: 1rem;
+        }
+
+        .result-container {
             background: var(--bg-card);
             border-radius: var(--radius-md);
             padding: 24px;
-            height: 100%;
+            min-height: 400px;
         }
 
-        .demo-result-title {
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .result-title {
             font-size: 1.25rem;
             font-weight: 600;
-            margin-bottom: 16px;
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        .demo-section {
-            margin-bottom: 20px;
+        .result-actions {
+            display: flex;
+            gap: 8px;
         }
 
-        .demo-section h4 {
-            font-size: 0.9rem;
+        .result-section {
+            margin-bottom: 24px;
+        }
+
+        .result-section h4 {
+            font-size: 0.95rem;
             font-weight: 600;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+            color: var(--accent-primary);
         }
 
-        .demo-list {
+        .result-section p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .key-points-list, .decisions-list {
             list-style: none;
         }
 
-        .demo-list li {
-            padding: 10px 14px;
-            background: var(--bg-primary);
-            border-radius: var(--radius-sm);
-            margin-bottom: 8px;
-            font-size: 0.85rem;
-            border-left: 3px solid var(--accent-primary);
-        }
-
-        .demo-action-item {
+        .key-points-list li, .decisions-list li {
             padding: 12px 16px;
             background: var(--bg-primary);
             border-radius: var(--radius-sm);
             margin-bottom: 8px;
-            border-left: 4px solid var(--accent-primary);
-        }
-
-        .demo-action-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 4px;
-        }
-
-        .demo-action-title {
-            font-weight: 600;
+            border-left: 3px solid var(--accent-primary);
             font-size: 0.9rem;
         }
 
-        .demo-priority {
-            padding: 2px 8px;
-            border-radius: 12px;
+        .action-item {
+            padding: 16px;
+            background: var(--bg-primary);
+            border-radius: var(--radius-sm);
+            margin-bottom: 12px;
+            border-left: 4px solid var(--accent-primary);
+        }
+
+        .action-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .action-item-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .priority-badge {
+            padding: 4px 10px;
+            border-radius: 20px;
             font-size: 0.7rem;
             font-weight: 600;
             text-transform: uppercase;
         }
 
-        .demo-priority.high {
+        .priority-high {
             background: rgba(239, 68, 68, 0.15);
             color: var(--error);
         }
 
-        .demo-priority.medium {
+        .priority-medium {
             background: rgba(245, 158, 11, 0.15);
             color: var(--warning);
         }
 
-        .demo-action-meta {
+        .priority-low {
+            background: rgba(34, 197, 94, 0.15);
+            color: var(--success);
+        }
+
+        .action-item-meta {
             font-size: 0.8rem;
             color: var(--text-muted);
-        }
-
-        .languages {
-            position: relative;
-            padding: 120px 24px;
-            z-index: 1;
-        }
-
-        .lang-grid {
-            max-width: 900px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            display: flex;
             gap: 16px;
         }
 
-        .lang-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            padding: 24px;
-            text-align: center;
-            transition: all 0.3s;
-        }
-
-        .lang-card:hover {
-            transform: translateY(-2px);
-            border-color: var(--accent-primary);
-        }
-
-        .lang-flag {
-            font-size: 2.5rem;
+        .agenda-item {
+            padding: 16px;
+            background: var(--bg-primary);
+            border-radius: var(--radius-sm);
             margin-bottom: 12px;
         }
 
-        .lang-name {
-            font-weight: 600;
-            margin-bottom: 4px;
+        .agenda-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
         }
 
-        .lang-code {
+        .agenda-item-time {
+            font-size: 0.8rem;
+            color: var(--accent-primary);
+            font-weight: 600;
+        }
+
+        .agenda-item-title {
+            font-weight: 600;
+        }
+
+        .agenda-item-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 16px;
+        }
+
+        .empty-state h3 {
+            font-size: 1.25rem;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            min-height: 300px;
+        }
+
+        .chat-message {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            font-size: 0.9rem;
+        }
+
+        .chat-message.user {
+            background: var(--gradient-primary);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-message.assistant {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .chat-input-container {
+            display: flex;
+            gap: 8px;
+            padding: 16px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.9rem;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        .template-card {
+            padding: 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .template-card:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
+        .template-card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .template-card-icon {
+            font-size: 1.5rem;
+        }
+
+        .template-card-title {
+            font-weight: 600;
+        }
+
+        .template-card-duration {
             font-size: 0.8rem;
             color: var(--text-muted);
         }
 
-        .cta {
-            position: relative;
-            padding: 120px 24px;
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--accent-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 24px;
+            padding: 16px 24px;
             background: var(--bg-secondary);
-            text-align: center;
-            z-index: 1;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
         }
 
-        .cta-content { max-width: 700px; margin: 0 auto; }
+        .notification.success { border-left: 4px solid var(--success); }
+        .notification.error { border-left: 4px solid var(--error); }
+        .notification.info { border-left: 4px solid var(--info); }
 
-        .cta h2 {
-            font-size: clamp(2rem, 4vw, 3rem);
-            font-weight: 700;
-            margin-bottom: 24px;
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
 
-        .cta p {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-            margin-bottom: 40px;
+        .history-item {
+            padding: 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
         }
 
-        .footer {
-            background: var(--bg-primary);
-            border-top: 1px solid var(--border-color);
-            padding: 48px 24px;
+        .history-item:hover {
+            border-color: var(--accent-primary);
         }
 
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
+        .history-item-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 24px;
+            margin-bottom: 8px;
         }
 
-        .footer-logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .footer-logo span:first-child { font-size: 1.5rem; }
-        .footer-logo span:last-child {
+        .history-item-title {
             font-weight: 600;
-            color: var(--text-secondary);
+            font-size: 0.95rem;
         }
 
-        .footer-links {
-            display: flex;
-            gap: 32px;
-        }
-
-        .footer-link {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: color 0.3s;
-        }
-
-        .footer-link:hover { color: var(--text-primary); }
-
-        .footer-copy {
+        .history-item-date {
+            font-size: 0.8rem;
             color: var(--text-muted);
+        }
+
+        .history-item-preview {
             font-size: 0.85rem;
+            color: var(--text-secondary);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         @media (max-width: 1024px) {
-            .demo-content { grid-template-columns: 1fr; }
-            .demo-sidebar { border-right: none; border-bottom: 1px solid var(--border-color); }
+            .main-container {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 768px) {
-            .header-content { flex-direction: column; gap: 16px; }
-            .stats-bar { flex-direction: column; gap: 24px; }
-            .features-grid { grid-template-columns: 1fr; }
-            .templates-grid { grid-template-columns: repeat(2, 1fr); }
-            .footer-content { flex-direction: column; text-align: center; }
-        }
+            .header-content {
+                flex-direction: column;
+            }
 
-        @media (max-width: 480px) {
-            .templates-grid { grid-template-columns: 1fr; }
-            .lang-grid { grid-template-columns: repeat(2, 1fr); }
+            .api-connection {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .api-input {
+                width: 100%;
+            }
+
+            .lang-selector {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="bg-animation"></div>
-
     <header class="header">
         <div class="header-content">
             <div class="logo">
                 <span class="logo-icon">📅</span>
-                <div>
-                    <h1 id="logoTitle">AI Meeting Assistant</h1>
-                    <p class="logo-subtitle" id="logoSubtitle">OpenWebUI + LLM Powered</p>
-                </div>
+                <h1 id="logoTitle">AI Meeting Assistant</h1>
             </div>
-            <div class="lang-selector">
-                <button class="lang-btn active" onclick="setLanguage('en')">EN</button>
-                <button class="lang-btn" onclick="setLanguage('ko')">한국어</button>
-                <button class="lang-btn" onclick="setLanguage('ja')">日本語</button>
-                <button class="lang-btn" onclick="setLanguage('zh')">中文</button>
-                <button class="lang-btn" onclick="setLanguage('es')">ES</button>
-                <button class="lang-btn" onclick="setLanguage('fr')">FR</button>
-                <button class="lang-btn" onclick="setLanguage('de')">DE</button>
+            <div class="header-controls">
+                <div class="api-connection">
+                    <input type="text" id="apiUrl" class="api-input" placeholder="http://localhost:5000">
+                    <button id="connectBtn" class="btn btn-primary" onclick="toggleConnection()">
+                        <span id="connectBtnText">Connect</span>
+                    </button>
+                    <div class="connection-status">
+                        <span class="status-dot" id="statusDot"></span>
+                        <span id="statusText">Simulation</span>
+                    </div>
+                </div>
+                <div class="lang-selector">
+                    <button class="lang-btn active" data-lang="en" onclick="setLanguage('en')">EN</button>
+                    <button class="lang-btn" data-lang="ko" onclick="setLanguage('ko')">KO</button>
+                    <button class="lang-btn" data-lang="ja" onclick="setLanguage('ja')">JA</button>
+                    <button class="lang-btn" data-lang="zh" onclick="setLanguage('zh')">ZH</button>
+                    <button class="lang-btn" data-lang="es" onclick="setLanguage('es')">ES</button>
+                    <button class="lang-btn" data-lang="fr" onclick="setLanguage('fr')">FR</button>
+                    <button class="lang-btn" data-lang="de" onclick="setLanguage('de')">DE</button>
+                </div>
             </div>
         </div>
     </header>
 
-    <section class="hero">
-        <div class="hero-content">
-            <div class="hero-badge">
-                <span class="hero-badge-dot"></span>
-                <span id="heroBadge">AI-Powered Meeting Intelligence</span>
+    <main class="main-container">
+        <div class="panel">
+            <div class="panel-header">
+                <span class="panel-title" id="inputPanelTitle">INPUT</span>
             </div>
-            <h1 id="heroTitle">Transform Your Meetings Into <span>Actionable Outcomes</span></h1>
-            <p class="hero-description" id="heroDesc">
-                Summarize meeting transcripts, extract action items, and generate professional agendas with AI. Support for 7 languages and multiple LLM providers.
-            </p>
-            <div class="hero-buttons">
-                <a href="https://github.com/yoon-gu/openwebui-meeting-assistant" class="btn btn-primary" target="_blank">
-                    <span>⭐</span>
-                    <span id="btnGithub">View on GitHub</span>
-                </a>
-                <a href="#demo" class="btn btn-secondary">
-                    <span>👁️</span>
-                    <span id="btnDemo">See Demo</span>
-                </a>
-            </div>
-            <div class="stats-bar">
-                <div class="stat-item">
-                    <div class="stat-value">8+</div>
-                    <div class="stat-label" id="statTemplates">Meeting Templates</div>
+            <div class="panel-body">
+                <div class="tabs" style="margin-bottom: 20px;">
+                    <button class="tab active" data-tab="summarize" onclick="showInputTab('summarize')" id="tabSummarize">Summarize</button>
+                    <button class="tab" data-tab="agenda" onclick="showInputTab('agenda')" id="tabAgenda">Agenda</button>
+                    <button class="tab" data-tab="templates" onclick="showInputTab('templates')" id="tabTemplates">Templates</button>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-value">7</div>
-                    <div class="stat-label" id="statLangs">Languages</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">3</div>
-                    <div class="stat-label" id="statProviders">LLM Providers</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">∞</div>
-                    <div class="stat-label" id="statInsights">AI Insights</div>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <section class="features" id="features">
-        <div class="section-header">
-            <span class="section-tag" id="featuresTag">Features</span>
-            <h2 id="featuresTitle">Powerful Meeting Tools</h2>
-            <p id="featuresDesc">Everything you need to make your meetings more productive</p>
-        </div>
-        <div class="features-grid">
-            <div class="feature-card">
-                <div class="feature-icon">📝</div>
-                <h3 id="feat1Title">Smart Summarization</h3>
-                <p id="feat1Desc">AI analyzes your meeting transcripts and generates concise summaries with key points, decisions, and action items.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">📋</div>
-                <h3 id="feat2Title">Agenda Generation</h3>
-                <p id="feat2Desc">Create professional meeting agendas with time allocations, objectives, and preparation items in seconds.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">✅</div>
-                <h3 id="feat3Title">Action Item Extraction</h3>
-                <p id="feat3Desc">Automatically identify and extract action items with assignees, due dates, and priority levels.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">💬</div>
-                <h3 id="feat4Title">AI Chat Assistant</h3>
-                <p id="feat4Desc">Ask questions about your meetings in natural language and get intelligent responses powered by LLM.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">📜</div>
-                <h3 id="feat5Title">Meeting History</h3>
-                <p id="feat5Desc">Track all your analyses with persistent history. Review, compare, and build upon previous meetings.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">📤</div>
-                <h3 id="feat6Title">Export Options</h3>
-                <p id="feat6Desc">Export to Markdown, copy to clipboard, or add directly to your calendar with ICS export.</p>
-            </div>
-        </div>
-    </section>
-
-    <section class="templates">
-        <div class="section-header">
-            <span class="section-tag" id="templatesTag">Templates</span>
-            <h2 id="templatesTitle">8 Meeting Templates</h2>
-            <p id="templatesDesc">Quick start with predefined meeting structures</p>
-        </div>
-        <div class="templates-grid">
-            <div class="template-card">
-                <div class="template-icon">🌅</div>
-                <div class="template-name">Daily Standup</div>
-                <div class="template-duration">15 min</div>
-            </div>
-            <div class="template-card">
-                <div class="template-icon">📋</div>
-                <div class="template-name">Sprint Planning</div>
-                <div class="template-duration">60 min</div>
-            </div>
-            <div class="template-card">
-                <div class="template-icon">🔄</div>
-                <div class="template-name">Retrospective</div>
-                <div class="template-duration">60 min</div>
-            </div>
-            <div class="template-card">
-                <div class="template-icon">💡</div>
-                <div class="template-name">Brainstorm</div>
-                <div class="template-duration">45 min</div>
-            </div>
-            <div class="template-card">
-                <div class="template-icon">👥</div>
-                <div class="template-name">1-on-1</div>
-                <div class="template-duration">30 min</div>
-            </div>
-            <div class="template-card">
-                <div class="template-icon">🚀</div>
-                <div class="template-name">Project Kickoff</div>
-                <div class="template-duration">90 min</div>
-            </div>
-            <div class="template-card">
-                <div class="template-icon">🤝</div>
-                <div class="template-name">Client Meeting</div>
-                <div class="template-duration">60 min</div>
-            </div>
-            <div class="template-card">
-                <div class="template-icon">👀</div>
-                <div class="template-name">Code Review</div>
-                <div class="template-duration">45 min</div>
-            </div>
-        </div>
-    </section>
-
-    <section class="demo" id="demo">
-        <div class="section-header">
-            <span class="section-tag" id="demoTag">Demo</span>
-            <h2 id="demoTitle">See It In Action</h2>
-            <p id="demoDesc">Experience AI-powered meeting intelligence</p>
-        </div>
-        <div class="demo-window">
-            <div class="demo-header">
-                <div class="demo-dots">
-                    <span class="demo-dot red"></span>
-                    <span class="demo-dot yellow"></span>
-                    <span class="demo-dot green"></span>
-                </div>
-                <span class="demo-title">AI Meeting Assistant</span>
-                <div style="width: 52px;"></div>
-            </div>
-            <div class="demo-content">
-                <div class="demo-sidebar">
-                    <div class="demo-tabs">
-                        <button class="demo-tab active">Summarize</button>
-                        <button class="demo-tab">Agenda</button>
-                        <button class="demo-tab">Templates</button>
-                    </div>
-                    <textarea class="demo-textarea" readonly>John: Let's discuss the Q4 roadmap.
+                <!-- Summarize Tab -->
+                <div id="summarizeTab" class="tab-content active">
+                    <div class="form-group">
+                        <label class="form-label" id="transcriptLabel">Meeting Transcript</label>
+                        <textarea id="transcriptInput" class="form-textarea" placeholder="Paste your meeting transcript here...">John: Let's discuss the Q4 roadmap.
 Sarah: I think we should prioritize the mobile app.
 John: Good point. Let's aim for launch by end of November.
 Sarah: I'll prepare the technical spec by Friday.
 John: Great. Mike, can you handle the backend API?
-Mike: Sure, I'll have the endpoints ready by next week.</textarea>
-                    <button class="demo-btn">
+Mike: Sure, I'll have the endpoints ready by next week.
+John: Perfect. Let's also review the budget allocation.
+Sarah: Marketing needs 30% for the launch campaign.
+Mike: Dev team needs new servers, around $5000.
+John: Approved. Let's schedule a follow-up next Monday.</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" id="meetingTypeLabel">Meeting Type</label>
+                        <select id="meetingTypeSelect" class="form-select">
+                            <option value="general">General Meeting</option>
+                            <option value="standup">Daily Standup</option>
+                            <option value="sprint_planning">Sprint Planning</option>
+                            <option value="retrospective">Retrospective</option>
+                            <option value="brainstorm">Brainstorm</option>
+                            <option value="one_on_one">1-on-1</option>
+                            <option value="project_kickoff">Project Kickoff</option>
+                            <option value="client_meeting">Client Meeting</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" id="participantsLabel">Participants (comma separated)</label>
+                        <input type="text" id="participantsInput" class="form-input" placeholder="John, Sarah, Mike">
+                    </div>
+                    <button class="btn btn-primary btn-full" onclick="summarizeMeeting()" id="summarizeBtn">
                         <span>📝</span>
-                        <span>Summarize Meeting</span>
+                        <span id="summarizeBtnText">Summarize Meeting</span>
                     </button>
                 </div>
-                <div class="demo-main">
-                    <div class="demo-result">
-                        <div class="demo-result-title">
-                            <span>📝</span>
-                            Q4 Roadmap Discussion
+
+                <!-- Agenda Tab -->
+                <div id="agendaTab" class="tab-content">
+                    <div class="form-group">
+                        <label class="form-label" id="topicLabel">Meeting Topic</label>
+                        <input type="text" id="topicInput" class="form-input" placeholder="Q4 Product Roadmap Review">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" id="agendaMeetingTypeLabel">Meeting Type</label>
+                        <select id="agendaMeetingType" class="form-select">
+                            <option value="general">General Meeting</option>
+                            <option value="standup">Daily Standup</option>
+                            <option value="sprint_planning">Sprint Planning</option>
+                            <option value="retrospective">Retrospective</option>
+                            <option value="brainstorm">Brainstorm</option>
+                            <option value="one_on_one">1-on-1</option>
+                            <option value="project_kickoff">Project Kickoff</option>
+                            <option value="client_meeting">Client Meeting</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" id="durationLabel">Duration (minutes)</label>
+                        <select id="durationSelect" class="form-select">
+                            <option value="15">15 minutes</option>
+                            <option value="30">30 minutes</option>
+                            <option value="45">45 minutes</option>
+                            <option value="60" selected>60 minutes</option>
+                            <option value="90">90 minutes</option>
+                            <option value="120">120 minutes</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" id="agendaParticipantsLabel">Participants</label>
+                        <input type="text" id="agendaParticipants" class="form-input" placeholder="John, Sarah, Mike">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" id="goalsLabel">Goals (one per line)</label>
+                        <textarea id="goalsInput" class="form-textarea" style="min-height: 100px;" placeholder="Review Q4 milestones
+Assign responsibilities
+Set deadlines"></textarea>
+                    </div>
+                    <button class="btn btn-primary btn-full" onclick="generateAgenda()" id="agendaBtn">
+                        <span>📋</span>
+                        <span id="agendaBtnText">Generate Agenda</span>
+                    </button>
+                </div>
+
+                <!-- Templates Tab -->
+                <div id="templatesTab" class="tab-content">
+                    <div id="templatesList"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-header">
+                <span class="panel-title" id="resultPanelTitle">RESULTS</span>
+                <div class="tabs">
+                    <button class="tab active" data-tab="result" onclick="showResultTab('result')" id="tabResult">Result</button>
+                    <button class="tab" data-tab="chat" onclick="showResultTab('chat')" id="tabChat">Chat</button>
+                    <button class="tab" data-tab="history" onclick="showResultTab('history')" id="tabHistory">History</button>
+                </div>
+            </div>
+            <div class="panel-body" style="padding: 0;">
+                <!-- Result Tab -->
+                <div id="resultTab" class="tab-content active" style="padding: 20px;">
+                    <div id="resultContent">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📝</div>
+                            <h3 id="emptyTitle">No Results Yet</h3>
+                            <p id="emptyDesc">Summarize a meeting or generate an agenda to see results</p>
                         </div>
-                        <div class="demo-section">
-                            <h4>💡 Key Points</h4>
-                            <ul class="demo-list">
-                                <li>Mobile app prioritized for Q4</li>
-                                <li>Target launch: End of November</li>
-                                <li>Technical spec and backend API in progress</li>
-                            </ul>
-                        </div>
-                        <div class="demo-section">
-                            <h4>📋 Action Items</h4>
-                            <div class="demo-action-item">
-                                <div class="demo-action-header">
-                                    <span class="demo-action-title">Prepare technical spec</span>
-                                    <span class="demo-priority high">High</span>
-                                </div>
-                                <div class="demo-action-meta">👤 Sarah • 📅 Friday</div>
-                            </div>
-                            <div class="demo-action-item">
-                                <div class="demo-action-header">
-                                    <span class="demo-action-title">Complete backend API endpoints</span>
-                                    <span class="demo-priority medium">Medium</span>
-                                </div>
-                                <div class="demo-action-meta">👤 Mike • 📅 Next week</div>
-                            </div>
+                    </div>
+                </div>
+
+                <!-- Chat Tab -->
+                <div id="chatTab" class="tab-content chat-container">
+                    <div id="chatMessages" class="chat-messages"></div>
+                    <div class="chat-input-container">
+                        <input type="text" id="chatInput" class="chat-input" placeholder="Ask about your meeting..." onkeypress="handleChatKeypress(event)">
+                        <button class="btn btn-primary" onclick="sendChatMessage()" id="sendBtn">
+                            <span id="sendBtnText">Send</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- History Tab -->
+                <div id="historyTab" class="tab-content" style="padding: 20px;">
+                    <div id="historyList">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📜</div>
+                            <h3 id="historyEmptyTitle">No History</h3>
+                            <p id="historyEmptyDesc">Your analysis history will appear here</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
-
-    <section class="languages" id="languages">
-        <div class="section-header">
-            <span class="section-tag" id="langsTag">Global</span>
-            <h2 id="langsTitle">7 Languages Supported</h2>
-            <p id="langsDesc">Use the tool in your preferred language</p>
-        </div>
-        <div class="lang-grid">
-            <div class="lang-card">
-                <div class="lang-flag">🇺🇸</div>
-                <div class="lang-name">English</div>
-                <div class="lang-code">EN</div>
-            </div>
-            <div class="lang-card">
-                <div class="lang-flag">🇰🇷</div>
-                <div class="lang-name">한국어</div>
-                <div class="lang-code">KO</div>
-            </div>
-            <div class="lang-card">
-                <div class="lang-flag">🇯🇵</div>
-                <div class="lang-name">日本語</div>
-                <div class="lang-code">JA</div>
-            </div>
-            <div class="lang-card">
-                <div class="lang-flag">🇨🇳</div>
-                <div class="lang-name">中文</div>
-                <div class="lang-code">ZH</div>
-            </div>
-            <div class="lang-card">
-                <div class="lang-flag">🇪🇸</div>
-                <div class="lang-name">Español</div>
-                <div class="lang-code">ES</div>
-            </div>
-            <div class="lang-card">
-                <div class="lang-flag">🇫🇷</div>
-                <div class="lang-name">Français</div>
-                <div class="lang-code">FR</div>
-            </div>
-            <div class="lang-card">
-                <div class="lang-flag">🇩🇪</div>
-                <div class="lang-name">Deutsch</div>
-                <div class="lang-code">DE</div>
-            </div>
-        </div>
-    </section>
-
-    <section class="cta">
-        <div class="cta-content">
-            <h2 id="ctaTitle">Ready to Transform Your Meetings?</h2>
-            <p id="ctaDesc">Deploy your own AI Meeting Assistant with OpenWebUI and start getting actionable insights today.</p>
-            <div class="hero-buttons">
-                <a href="https://github.com/yoon-gu/openwebui-meeting-assistant" class="btn btn-primary" target="_blank">
-                    <span>🚀</span>
-                    <span id="ctaBtnStart">Get Started</span>
-                </a>
-                <a href="https://github.com/yoon-gu/openwebui-meeting-assistant/blob/main/README.md" class="btn btn-secondary" target="_blank">
-                    <span>📖</span>
-                    <span id="ctaBtnDocs">Documentation</span>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-logo">
-                <span>📅</span>
-                <span>AI Meeting Assistant</span>
-            </div>
-            <div class="footer-links">
-                <a href="https://github.com/yoon-gu/openwebui-meeting-assistant" class="footer-link" target="_blank">GitHub</a>
-                <a href="https://github.com/yoon-gu/openwebui-meeting-assistant/issues" class="footer-link" target="_blank">Issues</a>
-                <a href="https://github.com/yoon-gu" class="footer-link" target="_blank">Author</a>
-            </div>
-            <p class="footer-copy">© 2024 AI Meeting Assistant. MIT License.</p>
-        </div>
-    </footer>
+    </main>
 
     <script>
+        // State
+        let isConnected = false;
+        let apiBaseUrl = '';
+        let currentLang = 'en';
+        let currentResult = null;
+        let chatHistory = [];
+        let analysisHistory = [];
+
+        // i18n
         const i18n = {
             en: {
                 logoTitle: 'AI Meeting Assistant',
-                logoSubtitle: 'OpenWebUI + LLM Powered',
-                heroBadge: 'AI-Powered Meeting Intelligence',
-                heroTitle: 'Transform Your Meetings Into <span>Actionable Outcomes</span>',
-                heroDesc: 'Summarize meeting transcripts, extract action items, and generate professional agendas with AI. Support for 7 languages and multiple LLM providers.',
-                btnGithub: 'View on GitHub',
-                btnDemo: 'See Demo',
-                statTemplates: 'Meeting Templates',
-                statLangs: 'Languages',
-                statProviders: 'LLM Providers',
-                statInsights: 'AI Insights',
-                featuresTag: 'Features',
-                featuresTitle: 'Powerful Meeting Tools',
-                featuresDesc: 'Everything you need to make your meetings more productive',
-                feat1Title: 'Smart Summarization',
-                feat1Desc: 'AI analyzes your meeting transcripts and generates concise summaries with key points, decisions, and action items.',
-                feat2Title: 'Agenda Generation',
-                feat2Desc: 'Create professional meeting agendas with time allocations, objectives, and preparation items in seconds.',
-                feat3Title: 'Action Item Extraction',
-                feat3Desc: 'Automatically identify and extract action items with assignees, due dates, and priority levels.',
-                feat4Title: 'AI Chat Assistant',
-                feat4Desc: 'Ask questions about your meetings in natural language and get intelligent responses powered by LLM.',
-                feat5Title: 'Meeting History',
-                feat5Desc: 'Track all your analyses with persistent history. Review, compare, and build upon previous meetings.',
-                feat6Title: 'Export Options',
-                feat6Desc: 'Export to Markdown, copy to clipboard, or add directly to your calendar with ICS export.',
-                templatesTag: 'Templates',
-                templatesTitle: '8 Meeting Templates',
-                templatesDesc: 'Quick start with predefined meeting structures',
-                demoTag: 'Demo',
-                demoTitle: 'See It In Action',
-                demoDesc: 'Experience AI-powered meeting intelligence',
-                langsTag: 'Global',
-                langsTitle: '7 Languages Supported',
-                langsDesc: 'Use the tool in your preferred language',
-                ctaTitle: 'Ready to Transform Your Meetings?',
-                ctaDesc: 'Deploy your own AI Meeting Assistant with OpenWebUI and start getting actionable insights today.',
-                ctaBtnStart: 'Get Started',
-                ctaBtnDocs: 'Documentation'
+                inputPanelTitle: 'INPUT',
+                resultPanelTitle: 'RESULTS',
+                tabSummarize: 'Summarize',
+                tabAgenda: 'Agenda',
+                tabTemplates: 'Templates',
+                tabResult: 'Result',
+                tabChat: 'Chat',
+                tabHistory: 'History',
+                transcriptLabel: 'Meeting Transcript',
+                meetingTypeLabel: 'Meeting Type',
+                participantsLabel: 'Participants (comma separated)',
+                summarizeBtnText: 'Summarize Meeting',
+                topicLabel: 'Meeting Topic',
+                agendaMeetingTypeLabel: 'Meeting Type',
+                durationLabel: 'Duration (minutes)',
+                agendaParticipantsLabel: 'Participants',
+                goalsLabel: 'Goals (one per line)',
+                agendaBtnText: 'Generate Agenda',
+                emptyTitle: 'No Results Yet',
+                emptyDesc: 'Summarize a meeting or generate an agenda to see results',
+                historyEmptyTitle: 'No History',
+                historyEmptyDesc: 'Your analysis history will appear here',
+                sendBtnText: 'Send',
+                connectBtnText: 'Connect',
+                disconnectBtnText: 'Disconnect',
+                statusConnected: 'Connected',
+                statusSimulation: 'Simulation',
+                copySuccess: 'Copied to clipboard!',
+                exportSuccess: 'Exported successfully!',
+                connectionSuccess: 'Connected to API',
+                connectionFailed: 'Connection failed',
+                summaryTitle: 'Summary',
+                keyPoints: 'Key Points',
+                decisions: 'Decisions',
+                actionItems: 'Action Items',
+                nextSteps: 'Next Steps',
+                agendaTitle: 'Meeting Agenda',
+                objectives: 'Objectives',
+                agendaItems: 'Agenda Items',
+                preparationItems: 'Preparation Items',
+                high: 'High',
+                medium: 'Medium',
+                low: 'Low'
             },
             ko: {
                 logoTitle: 'AI 회의 도우미',
-                logoSubtitle: 'OpenWebUI + LLM 기반',
-                heroBadge: 'AI 기반 회의 인텔리전스',
-                heroTitle: '회의를 <span>실행 가능한 결과</span>로 변환',
-                heroDesc: 'AI로 회의 녹취록 요약, 액션 아이템 추출, 전문적인 안건 생성. 7개 언어와 다양한 LLM 제공자 지원.',
-                btnGithub: 'GitHub에서 보기',
-                btnDemo: '데모 보기',
-                statTemplates: '회의 템플릿',
-                statLangs: '지원 언어',
-                statProviders: 'LLM 제공자',
-                statInsights: 'AI 인사이트',
-                featuresTag: '기능',
-                featuresTitle: '강력한 회의 도구',
-                featuresDesc: '회의를 더 생산적으로 만드는 모든 것',
-                feat1Title: '스마트 요약',
-                feat1Desc: 'AI가 회의 녹취록을 분석하고 핵심 포인트, 결정 사항, 액션 아이템이 포함된 간결한 요약을 생성합니다.',
-                feat2Title: '안건 생성',
-                feat2Desc: '시간 배분, 목표, 준비 사항이 포함된 전문적인 회의 안건을 몇 초 만에 생성합니다.',
-                feat3Title: '액션 아이템 추출',
-                feat3Desc: '담당자, 마감일, 우선순위가 포함된 액션 아이템을 자동으로 식별하고 추출합니다.',
-                feat4Title: 'AI 채팅 어시스턴트',
-                feat4Desc: '자연어로 회의에 대해 질문하고 LLM 기반의 지능적인 응답을 받으세요.',
-                feat5Title: '회의 히스토리',
-                feat5Desc: '지속적인 히스토리로 모든 분석을 추적. 이전 회의를 검토, 비교 및 활용.',
-                feat6Title: '내보내기 옵션',
-                feat6Desc: '마크다운으로 내보내기, 클립보드에 복사, ICS 내보내기로 캘린더에 바로 추가.',
-                templatesTag: '템플릿',
-                templatesTitle: '8개 회의 템플릿',
-                templatesDesc: '미리 정의된 회의 구조로 빠르게 시작',
-                demoTag: '데모',
-                demoTitle: '실제로 확인하세요',
-                demoDesc: 'AI 기반 회의 인텔리전스를 경험하세요',
-                langsTag: '글로벌',
-                langsTitle: '7개 언어 지원',
-                langsDesc: '선호하는 언어로 도구를 사용하세요',
-                ctaTitle: '회의를 변화시킬 준비가 되셨나요?',
-                ctaDesc: 'OpenWebUI로 자신만의 AI 회의 도우미를 배포하고 오늘부터 실행 가능한 인사이트를 얻으세요.',
-                ctaBtnStart: '시작하기',
-                ctaBtnDocs: '문서'
+                inputPanelTitle: '입력',
+                resultPanelTitle: '결과',
+                tabSummarize: '요약',
+                tabAgenda: '안건',
+                tabTemplates: '템플릿',
+                tabResult: '결과',
+                tabChat: '채팅',
+                tabHistory: '기록',
+                transcriptLabel: '회의 녹취록',
+                meetingTypeLabel: '회의 유형',
+                participantsLabel: '참석자 (쉼표로 구분)',
+                summarizeBtnText: '회의 요약',
+                topicLabel: '회의 주제',
+                agendaMeetingTypeLabel: '회의 유형',
+                durationLabel: '소요 시간 (분)',
+                agendaParticipantsLabel: '참석자',
+                goalsLabel: '목표 (줄당 하나)',
+                agendaBtnText: '안건 생성',
+                emptyTitle: '아직 결과가 없습니다',
+                emptyDesc: '회의를 요약하거나 안건을 생성하여 결과를 확인하세요',
+                historyEmptyTitle: '기록 없음',
+                historyEmptyDesc: '분석 기록이 여기에 표시됩니다',
+                sendBtnText: '전송',
+                connectBtnText: '연결',
+                disconnectBtnText: '연결 해제',
+                statusConnected: '연결됨',
+                statusSimulation: '시뮬레이션',
+                copySuccess: '클립보드에 복사됨!',
+                exportSuccess: '내보내기 완료!',
+                connectionSuccess: 'API에 연결됨',
+                connectionFailed: '연결 실패',
+                summaryTitle: '요약',
+                keyPoints: '핵심 포인트',
+                decisions: '결정 사항',
+                actionItems: '액션 아이템',
+                nextSteps: '다음 단계',
+                agendaTitle: '회의 안건',
+                objectives: '목표',
+                agendaItems: '안건 항목',
+                preparationItems: '준비 사항',
+                high: '높음',
+                medium: '보통',
+                low: '낮음'
             },
             ja: {
                 logoTitle: 'AIミーティングアシスタント',
-                logoSubtitle: 'OpenWebUI + LLM 搭載',
-                heroBadge: 'AI駆動ミーティングインテリジェンス',
-                heroTitle: 'ミーティングを<span>実行可能な成果</span>に変換',
-                heroDesc: 'AIで会議トランスクリプトの要約、アクションアイテムの抽出、プロフェッショナルなアジェンダ生成。7言語と複数のLLMプロバイダーをサポート。',
-                btnGithub: 'GitHubで見る',
-                btnDemo: 'デモを見る',
-                statTemplates: '会議テンプレート',
-                statLangs: '対応言語',
-                statProviders: 'LLMプロバイダー',
-                statInsights: 'AIインサイト',
-                featuresTag: '機能',
-                featuresTitle: '強力な会議ツール',
-                featuresDesc: '会議をより生産的にするために必要なすべて',
-                feat1Title: 'スマート要約',
-                feat1Desc: 'AIが会議トランスクリプトを分析し、キーポイント、決定事項、アクションアイテムを含む簡潔な要約を生成。',
-                feat2Title: 'アジェンダ生成',
-                feat2Desc: '時間配分、目標、準備事項を含むプロフェッショナルな会議アジェンダを数秒で作成。',
-                feat3Title: 'アクションアイテム抽出',
-                feat3Desc: '担当者、期限、優先度を含むアクションアイテムを自動的に識別・抽出。',
-                feat4Title: 'AIチャットアシスタント',
-                feat4Desc: '自然言語で会議について質問し、LLM搭載のインテリジェントな回答を取得。',
-                feat5Title: '会議履歴',
-                feat5Desc: '永続的な履歴ですべての分析を追跡。以前の会議を確認、比較、活用。',
-                feat6Title: 'エクスポートオプション',
-                feat6Desc: 'Markdownへのエクスポート、クリップボードへのコピー、ICSエクスポートでカレンダーに直接追加。',
-                templatesTag: 'テンプレート',
-                templatesTitle: '8つの会議テンプレート',
-                templatesDesc: '定義済みの会議構造で素早く開始',
-                demoTag: 'デモ',
-                demoTitle: '実際に見てみましょう',
-                demoDesc: 'AI駆動の会議インテリジェンスを体験',
-                langsTag: 'グローバル',
-                langsTitle: '7言語対応',
-                langsDesc: 'お好みの言語でツールを使用',
-                ctaTitle: '会議を変革する準備はできましたか？',
-                ctaDesc: 'OpenWebUIで独自のAIミーティングアシスタントをデプロイし、今日から実行可能なインサイトを取得。',
-                ctaBtnStart: '始める',
-                ctaBtnDocs: 'ドキュメント'
+                inputPanelTitle: '入力',
+                resultPanelTitle: '結果',
+                tabSummarize: '要約',
+                tabAgenda: 'アジェンダ',
+                tabTemplates: 'テンプレート',
+                tabResult: '結果',
+                tabChat: 'チャット',
+                tabHistory: '履歴',
+                transcriptLabel: '会議トランスクリプト',
+                meetingTypeLabel: '会議タイプ',
+                participantsLabel: '参加者（カンマ区切り）',
+                summarizeBtnText: '会議を要約',
+                topicLabel: '会議トピック',
+                agendaMeetingTypeLabel: '会議タイプ',
+                durationLabel: '所要時間（分）',
+                agendaParticipantsLabel: '参加者',
+                goalsLabel: '目標（1行に1つ）',
+                agendaBtnText: 'アジェンダ生成',
+                emptyTitle: 'まだ結果がありません',
+                emptyDesc: '会議を要約するかアジェンダを生成してください',
+                historyEmptyTitle: '履歴なし',
+                historyEmptyDesc: '分析履歴がここに表示されます',
+                sendBtnText: '送信',
+                connectBtnText: '接続',
+                disconnectBtnText: '切断',
+                statusConnected: '接続済み',
+                statusSimulation: 'シミュレーション',
+                copySuccess: 'クリップボードにコピー!',
+                exportSuccess: 'エクスポート完了!',
+                connectionSuccess: 'APIに接続しました',
+                connectionFailed: '接続に失敗しました',
+                summaryTitle: '要約',
+                keyPoints: 'キーポイント',
+                decisions: '決定事項',
+                actionItems: 'アクションアイテム',
+                nextSteps: '次のステップ',
+                agendaTitle: '会議アジェンダ',
+                objectives: '目標',
+                agendaItems: 'アジェンダ項目',
+                preparationItems: '準備事項',
+                high: '高',
+                medium: '中',
+                low: '低'
             },
             zh: {
                 logoTitle: 'AI会议助手',
-                logoSubtitle: 'OpenWebUI + LLM 驱动',
-                heroBadge: 'AI驱动会议智能',
-                heroTitle: '将会议转化为<span>可执行的成果</span>',
-                heroDesc: '用AI总结会议记录、提取行动项、生成专业议程。支持7种语言和多个LLM提供商。',
-                btnGithub: '在GitHub上查看',
-                btnDemo: '查看演示',
-                statTemplates: '会议模板',
-                statLangs: '支持语言',
-                statProviders: 'LLM提供商',
-                statInsights: 'AI洞察',
-                featuresTag: '功能',
-                featuresTitle: '强大的会议工具',
-                featuresDesc: '让会议更高效所需的一切',
-                feat1Title: '智能摘要',
-                feat1Desc: 'AI分析会议记录并生成包含要点、决策和行动项的简洁摘要。',
-                feat2Title: '议程生成',
-                feat2Desc: '几秒钟内创建包含时间分配、目标和准备事项的专业会议议程。',
-                feat3Title: '行动项提取',
-                feat3Desc: '自动识别和提取包含负责人、截止日期和优先级的行动项。',
-                feat4Title: 'AI聊天助手',
-                feat4Desc: '用自然语言询问会议相关问题，获取LLM驱动的智能回答。',
-                feat5Title: '会议历史',
-                feat5Desc: '通过持久历史跟踪所有分析。查看、比较和利用以前的会议。',
-                feat6Title: '导出选项',
-                feat6Desc: '导出到Markdown、复制到剪贴板，或通过ICS导出直接添加到日历。',
-                templatesTag: '模板',
-                templatesTitle: '8个会议模板',
-                templatesDesc: '使用预定义会议结构快速开始',
-                demoTag: '演示',
-                demoTitle: '实际体验',
-                demoDesc: '体验AI驱动的会议智能',
-                langsTag: '全球化',
-                langsTitle: '支持7种语言',
-                langsDesc: '使用您喜欢的语言',
-                ctaTitle: '准备好改变您的会议了吗？',
-                ctaDesc: '使用OpenWebUI部署您自己的AI会议助手，今天就开始获取可执行的洞察。',
-                ctaBtnStart: '开始使用',
-                ctaBtnDocs: '文档'
+                inputPanelTitle: '输入',
+                resultPanelTitle: '结果',
+                tabSummarize: '摘要',
+                tabAgenda: '议程',
+                tabTemplates: '模板',
+                tabResult: '结果',
+                tabChat: '聊天',
+                tabHistory: '历史',
+                transcriptLabel: '会议记录',
+                meetingTypeLabel: '会议类型',
+                participantsLabel: '参与者（逗号分隔）',
+                summarizeBtnText: '总结会议',
+                topicLabel: '会议主题',
+                agendaMeetingTypeLabel: '会议类型',
+                durationLabel: '时长（分钟）',
+                agendaParticipantsLabel: '参与者',
+                goalsLabel: '目标（每行一个）',
+                agendaBtnText: '生成议程',
+                emptyTitle: '暂无结果',
+                emptyDesc: '总结会议或生成议程以查看结果',
+                historyEmptyTitle: '暂无历史',
+                historyEmptyDesc: '您的分析历史将显示在这里',
+                sendBtnText: '发送',
+                connectBtnText: '连接',
+                disconnectBtnText: '断开',
+                statusConnected: '已连接',
+                statusSimulation: '模拟模式',
+                copySuccess: '已复制到剪贴板！',
+                exportSuccess: '导出成功！',
+                connectionSuccess: '已连接到API',
+                connectionFailed: '连接失败',
+                summaryTitle: '摘要',
+                keyPoints: '要点',
+                decisions: '决策',
+                actionItems: '行动项',
+                nextSteps: '下一步',
+                agendaTitle: '会议议程',
+                objectives: '目标',
+                agendaItems: '议程项目',
+                preparationItems: '准备事项',
+                high: '高',
+                medium: '中',
+                low: '低'
             },
             es: {
                 logoTitle: 'Asistente de Reuniones IA',
-                logoSubtitle: 'Potenciado por OpenWebUI + LLM',
-                heroBadge: 'Inteligencia de Reuniones con IA',
-                heroTitle: 'Transforma tus Reuniones en <span>Resultados Accionables</span>',
-                heroDesc: 'Resume transcripciones, extrae elementos de acción y genera agendas profesionales con IA. Soporte para 7 idiomas y múltiples proveedores LLM.',
-                btnGithub: 'Ver en GitHub',
-                btnDemo: 'Ver Demo',
-                statTemplates: 'Plantillas',
-                statLangs: 'Idiomas',
-                statProviders: 'Proveedores LLM',
-                statInsights: 'Insights IA',
-                featuresTag: 'Características',
-                featuresTitle: 'Herramientas Potentes',
-                featuresDesc: 'Todo lo que necesitas para hacer tus reuniones más productivas',
-                feat1Title: 'Resumen Inteligente',
-                feat1Desc: 'IA analiza tus transcripciones y genera resúmenes concisos con puntos clave, decisiones y elementos de acción.',
-                feat2Title: 'Generación de Agenda',
-                feat2Desc: 'Crea agendas profesionales con asignación de tiempo, objetivos y elementos de preparación en segundos.',
-                feat3Title: 'Extracción de Acciones',
-                feat3Desc: 'Identifica y extrae automáticamente elementos de acción con asignados, fechas límite y niveles de prioridad.',
-                feat4Title: 'Asistente Chat IA',
-                feat4Desc: 'Haz preguntas sobre tus reuniones en lenguaje natural y obtén respuestas inteligentes.',
-                feat5Title: 'Historial de Reuniones',
-                feat5Desc: 'Rastrea todos tus análisis con historial persistente. Revisa, compara y aprovecha reuniones anteriores.',
-                feat6Title: 'Opciones de Exportación',
-                feat6Desc: 'Exporta a Markdown, copia al portapapeles o agrega directamente a tu calendario con exportación ICS.',
-                templatesTag: 'Plantillas',
-                templatesTitle: '8 Plantillas de Reunión',
-                templatesDesc: 'Comienza rápido con estructuras predefinidas',
-                demoTag: 'Demo',
-                demoTitle: 'Míralo en Acción',
-                demoDesc: 'Experimenta la inteligencia de reuniones con IA',
-                langsTag: 'Global',
-                langsTitle: '7 Idiomas Soportados',
-                langsDesc: 'Usa la herramienta en tu idioma preferido',
-                ctaTitle: '¿Listo para Transformar tus Reuniones?',
-                ctaDesc: 'Despliega tu propio Asistente de Reuniones IA con OpenWebUI y comienza a obtener insights accionables hoy.',
-                ctaBtnStart: 'Comenzar',
-                ctaBtnDocs: 'Documentación'
+                inputPanelTitle: 'ENTRADA',
+                resultPanelTitle: 'RESULTADOS',
+                tabSummarize: 'Resumir',
+                tabAgenda: 'Agenda',
+                tabTemplates: 'Plantillas',
+                tabResult: 'Resultado',
+                tabChat: 'Chat',
+                tabHistory: 'Historial',
+                transcriptLabel: 'Transcripción de la Reunión',
+                meetingTypeLabel: 'Tipo de Reunión',
+                participantsLabel: 'Participantes (separados por comas)',
+                summarizeBtnText: 'Resumir Reunión',
+                topicLabel: 'Tema de la Reunión',
+                agendaMeetingTypeLabel: 'Tipo de Reunión',
+                durationLabel: 'Duración (minutos)',
+                agendaParticipantsLabel: 'Participantes',
+                goalsLabel: 'Objetivos (uno por línea)',
+                agendaBtnText: 'Generar Agenda',
+                emptyTitle: 'Sin Resultados Aún',
+                emptyDesc: 'Resume una reunión o genera una agenda para ver resultados',
+                historyEmptyTitle: 'Sin Historial',
+                historyEmptyDesc: 'Tu historial de análisis aparecerá aquí',
+                sendBtnText: 'Enviar',
+                connectBtnText: 'Conectar',
+                disconnectBtnText: 'Desconectar',
+                statusConnected: 'Conectado',
+                statusSimulation: 'Simulación',
+                copySuccess: '¡Copiado al portapapeles!',
+                exportSuccess: '¡Exportado con éxito!',
+                connectionSuccess: 'Conectado a la API',
+                connectionFailed: 'Conexión fallida',
+                summaryTitle: 'Resumen',
+                keyPoints: 'Puntos Clave',
+                decisions: 'Decisiones',
+                actionItems: 'Elementos de Acción',
+                nextSteps: 'Próximos Pasos',
+                agendaTitle: 'Agenda de la Reunión',
+                objectives: 'Objetivos',
+                agendaItems: 'Elementos de la Agenda',
+                preparationItems: 'Elementos de Preparación',
+                high: 'Alta',
+                medium: 'Media',
+                low: 'Baja'
             },
             fr: {
                 logoTitle: 'Assistant de Réunion IA',
-                logoSubtitle: 'Propulsé par OpenWebUI + LLM',
-                heroBadge: 'Intelligence de Réunion par IA',
-                heroTitle: 'Transformez vos Réunions en <span>Résultats Actionnables</span>',
-                heroDesc: 'Résumez les transcriptions, extrayez les actions et générez des agendas professionnels avec IA. Support de 7 langues et multiples fournisseurs LLM.',
-                btnGithub: 'Voir sur GitHub',
-                btnDemo: 'Voir la Démo',
-                statTemplates: 'Modèles',
-                statLangs: 'Langues',
-                statProviders: 'Fournisseurs LLM',
-                statInsights: 'Insights IA',
-                featuresTag: 'Fonctionnalités',
-                featuresTitle: 'Outils Puissants',
-                featuresDesc: 'Tout ce dont vous avez besoin pour rendre vos réunions plus productives',
-                feat1Title: 'Résumé Intelligent',
-                feat1Desc: 'L\'IA analyse vos transcriptions et génère des résumés concis avec points clés, décisions et éléments d\'action.',
-                feat2Title: 'Génération d\'Agenda',
-                feat2Desc: 'Créez des agendas professionnels avec allocation de temps, objectifs et éléments de préparation en secondes.',
-                feat3Title: 'Extraction d\'Actions',
-                feat3Desc: 'Identifiez et extrayez automatiquement les éléments d\'action avec assignés, dates limites et niveaux de priorité.',
-                feat4Title: 'Assistant Chat IA',
-                feat4Desc: 'Posez des questions sur vos réunions en langage naturel et obtenez des réponses intelligentes.',
-                feat5Title: 'Historique des Réunions',
-                feat5Desc: 'Suivez toutes vos analyses avec un historique persistant. Révisez, comparez et exploitez les réunions précédentes.',
-                feat6Title: 'Options d\'Export',
-                feat6Desc: 'Exportez vers Markdown, copiez dans le presse-papiers ou ajoutez directement à votre calendrier avec export ICS.',
-                templatesTag: 'Modèles',
-                templatesTitle: '8 Modèles de Réunion',
-                templatesDesc: 'Démarrez rapidement avec des structures prédéfinies',
-                demoTag: 'Démo',
-                demoTitle: 'Voyez-le en Action',
-                demoDesc: 'Découvrez l\'intelligence de réunion par IA',
-                langsTag: 'Global',
-                langsTitle: '7 Langues Supportées',
-                langsDesc: 'Utilisez l\'outil dans votre langue préférée',
-                ctaTitle: 'Prêt à Transformer vos Réunions?',
-                ctaDesc: 'Déployez votre propre Assistant de Réunion IA avec OpenWebUI et obtenez des insights actionnables dès aujourd\'hui.',
-                ctaBtnStart: 'Commencer',
-                ctaBtnDocs: 'Documentation'
+                inputPanelTitle: 'ENTRÉE',
+                resultPanelTitle: 'RÉSULTATS',
+                tabSummarize: 'Résumer',
+                tabAgenda: 'Agenda',
+                tabTemplates: 'Modèles',
+                tabResult: 'Résultat',
+                tabChat: 'Chat',
+                tabHistory: 'Historique',
+                transcriptLabel: 'Transcription de la Réunion',
+                meetingTypeLabel: 'Type de Réunion',
+                participantsLabel: 'Participants (séparés par des virgules)',
+                summarizeBtnText: 'Résumer la Réunion',
+                topicLabel: 'Sujet de la Réunion',
+                agendaMeetingTypeLabel: 'Type de Réunion',
+                durationLabel: 'Durée (minutes)',
+                agendaParticipantsLabel: 'Participants',
+                goalsLabel: 'Objectifs (un par ligne)',
+                agendaBtnText: 'Générer l\'Agenda',
+                emptyTitle: 'Pas de Résultats Encore',
+                emptyDesc: 'Résumez une réunion ou générez un agenda pour voir les résultats',
+                historyEmptyTitle: 'Pas d\'Historique',
+                historyEmptyDesc: 'Votre historique d\'analyse apparaîtra ici',
+                sendBtnText: 'Envoyer',
+                connectBtnText: 'Connecter',
+                disconnectBtnText: 'Déconnecter',
+                statusConnected: 'Connecté',
+                statusSimulation: 'Simulation',
+                copySuccess: 'Copié dans le presse-papiers !',
+                exportSuccess: 'Exporté avec succès !',
+                connectionSuccess: 'Connecté à l\'API',
+                connectionFailed: 'Échec de la connexion',
+                summaryTitle: 'Résumé',
+                keyPoints: 'Points Clés',
+                decisions: 'Décisions',
+                actionItems: 'Éléments d\'Action',
+                nextSteps: 'Prochaines Étapes',
+                agendaTitle: 'Agenda de la Réunion',
+                objectives: 'Objectifs',
+                agendaItems: 'Éléments de l\'Agenda',
+                preparationItems: 'Éléments de Préparation',
+                high: 'Haute',
+                medium: 'Moyenne',
+                low: 'Basse'
             },
             de: {
                 logoTitle: 'KI-Meeting-Assistent',
-                logoSubtitle: 'Powered by OpenWebUI + LLM',
-                heroBadge: 'KI-gestützte Meeting-Intelligenz',
-                heroTitle: 'Verwandeln Sie Meetings in <span>Umsetzbare Ergebnisse</span>',
-                heroDesc: 'Transkripte zusammenfassen, Aktionen extrahieren und professionelle Agenden mit KI generieren. Unterstützung für 7 Sprachen und mehrere LLM-Anbieter.',
-                btnGithub: 'Auf GitHub ansehen',
-                btnDemo: 'Demo ansehen',
-                statTemplates: 'Vorlagen',
-                statLangs: 'Sprachen',
-                statProviders: 'LLM-Anbieter',
-                statInsights: 'KI-Erkenntnisse',
-                featuresTag: 'Funktionen',
-                featuresTitle: 'Leistungsstarke Tools',
-                featuresDesc: 'Alles was Sie brauchen, um Ihre Meetings produktiver zu machen',
-                feat1Title: 'Intelligente Zusammenfassung',
-                feat1Desc: 'KI analysiert Ihre Transkripte und generiert prägnante Zusammenfassungen mit Kernpunkten, Entscheidungen und Aktionspunkten.',
-                feat2Title: 'Agenda-Generierung',
-                feat2Desc: 'Erstellen Sie professionelle Meeting-Agenden mit Zeitverteilung, Zielen und Vorbereitungspunkten in Sekunden.',
-                feat3Title: 'Aktions-Extraktion',
-                feat3Desc: 'Identifizieren und extrahieren Sie automatisch Aktionspunkte mit Zugewiesenen, Fälligkeitsdaten und Prioritätsstufen.',
-                feat4Title: 'KI-Chat-Assistent',
-                feat4Desc: 'Stellen Sie Fragen zu Ihren Meetings in natürlicher Sprache und erhalten Sie intelligente Antworten.',
-                feat5Title: 'Meeting-Verlauf',
-                feat5Desc: 'Verfolgen Sie alle Analysen mit persistentem Verlauf. Überprüfen, vergleichen und nutzen Sie frühere Meetings.',
-                feat6Title: 'Export-Optionen',
-                feat6Desc: 'Export nach Markdown, in die Zwischenablage kopieren oder direkt mit ICS-Export zum Kalender hinzufügen.',
-                templatesTag: 'Vorlagen',
-                templatesTitle: '8 Meeting-Vorlagen',
-                templatesDesc: 'Schnellstart mit vordefinierten Strukturen',
-                demoTag: 'Demo',
-                demoTitle: 'Sehen Sie es in Aktion',
-                demoDesc: 'Erleben Sie KI-gesteuerte Meeting-Intelligenz',
-                langsTag: 'Global',
-                langsTitle: '7 Sprachen unterstützt',
-                langsDesc: 'Verwenden Sie das Tool in Ihrer bevorzugten Sprache',
-                ctaTitle: 'Bereit, Ihre Meetings zu transformieren?',
-                ctaDesc: 'Stellen Sie Ihren eigenen KI-Meeting-Assistenten mit OpenWebUI bereit und erhalten Sie heute umsetzbare Erkenntnisse.',
-                ctaBtnStart: 'Loslegen',
-                ctaBtnDocs: 'Dokumentation'
+                inputPanelTitle: 'EINGABE',
+                resultPanelTitle: 'ERGEBNISSE',
+                tabSummarize: 'Zusammenfassen',
+                tabAgenda: 'Agenda',
+                tabTemplates: 'Vorlagen',
+                tabResult: 'Ergebnis',
+                tabChat: 'Chat',
+                tabHistory: 'Verlauf',
+                transcriptLabel: 'Meeting-Transkript',
+                meetingTypeLabel: 'Meeting-Typ',
+                participantsLabel: 'Teilnehmer (kommagetrennt)',
+                summarizeBtnText: 'Meeting Zusammenfassen',
+                topicLabel: 'Meeting-Thema',
+                agendaMeetingTypeLabel: 'Meeting-Typ',
+                durationLabel: 'Dauer (Minuten)',
+                agendaParticipantsLabel: 'Teilnehmer',
+                goalsLabel: 'Ziele (eins pro Zeile)',
+                agendaBtnText: 'Agenda Generieren',
+                emptyTitle: 'Noch keine Ergebnisse',
+                emptyDesc: 'Fassen Sie ein Meeting zusammen oder generieren Sie eine Agenda',
+                historyEmptyTitle: 'Kein Verlauf',
+                historyEmptyDesc: 'Ihr Analyseverlauf erscheint hier',
+                sendBtnText: 'Senden',
+                connectBtnText: 'Verbinden',
+                disconnectBtnText: 'Trennen',
+                statusConnected: 'Verbunden',
+                statusSimulation: 'Simulation',
+                copySuccess: 'In die Zwischenablage kopiert!',
+                exportSuccess: 'Erfolgreich exportiert!',
+                connectionSuccess: 'Mit API verbunden',
+                connectionFailed: 'Verbindung fehlgeschlagen',
+                summaryTitle: 'Zusammenfassung',
+                keyPoints: 'Kernpunkte',
+                decisions: 'Entscheidungen',
+                actionItems: 'Aktionspunkte',
+                nextSteps: 'Nächste Schritte',
+                agendaTitle: 'Meeting-Agenda',
+                objectives: 'Ziele',
+                agendaItems: 'Agenda-Punkte',
+                preparationItems: 'Vorbereitungspunkte',
+                high: 'Hoch',
+                medium: 'Mittel',
+                low: 'Niedrig'
             }
         };
 
-        let currentLang = 'en';
+        // Templates
+        const templates = [
+            { id: 'standup', icon: '🌅', name: 'Daily Standup', duration: 15 },
+            { id: 'sprint_planning', icon: '📋', name: 'Sprint Planning', duration: 60 },
+            { id: 'retrospective', icon: '🔄', name: 'Retrospective', duration: 60 },
+            { id: 'brainstorm', icon: '💡', name: 'Brainstorm', duration: 45 },
+            { id: 'one_on_one', icon: '👥', name: '1-on-1', duration: 30 },
+            { id: 'project_kickoff', icon: '🚀', name: 'Project Kickoff', duration: 90 },
+            { id: 'client_meeting', icon: '🤝', name: 'Client Meeting', duration: 60 },
+            { id: 'code_review', icon: '👀', name: 'Code Review', duration: 45 }
+        ];
 
+        // Simulation responses
+        const simulationResponses = {
+            summarize: {
+                title: 'Q4 Roadmap Discussion',
+                summary: 'The team discussed the Q4 roadmap with focus on mobile app development. Key decisions include prioritizing mobile app launch by end of November, with technical specifications and backend API development as immediate priorities.',
+                key_points: [
+                    'Mobile app prioritized for Q4 development',
+                    'Target launch date: End of November',
+                    'Technical spec and backend API in parallel development',
+                    'Marketing budget: 30% for launch campaign',
+                    'Infrastructure investment: $5000 for new servers'
+                ],
+                decisions: [
+                    'Mobile app is the primary Q4 priority',
+                    'November deadline for initial launch',
+                    'Budget allocations approved for marketing and infrastructure'
+                ],
+                action_items: [
+                    { task: 'Prepare technical specification', assignee: 'Sarah', due_date: 'Friday', priority: 'high' },
+                    { task: 'Complete backend API endpoints', assignee: 'Mike', due_date: 'Next week', priority: 'high' },
+                    { task: 'Plan marketing launch campaign', assignee: 'Marketing Team', due_date: 'TBD', priority: 'medium' },
+                    { task: 'Procure new servers', assignee: 'DevOps', due_date: 'This month', priority: 'medium' }
+                ],
+                next_steps: [
+                    'Schedule follow-up meeting for Monday',
+                    'Review technical spec once completed',
+                    'Begin sprint planning for mobile development'
+                ]
+            },
+            agenda: {
+                title: 'Q4 Product Roadmap Review',
+                objectives: [
+                    'Review current progress on Q4 initiatives',
+                    'Align team on priorities and milestones',
+                    'Identify blockers and mitigation strategies'
+                ],
+                agenda_items: [
+                    { time: '0:00 - 0:05', title: 'Welcome & Introduction', description: 'Brief overview of meeting goals' },
+                    { time: '0:05 - 0:20', title: 'Progress Review', description: 'Status update on current initiatives' },
+                    { time: '0:20 - 0:35', title: 'Priority Discussion', description: 'Review and adjust Q4 priorities' },
+                    { time: '0:35 - 0:50', title: 'Blocker Resolution', description: 'Identify and address key blockers' },
+                    { time: '0:50 - 0:60', title: 'Action Items & Wrap-up', description: 'Summarize decisions and next steps' }
+                ],
+                preparation_items: [
+                    'Review Q4 roadmap document',
+                    'Prepare status updates for your areas',
+                    'List any blockers or concerns'
+                ]
+            },
+            chat: [
+                "Based on the meeting summary, the main priority is launching the mobile app by the end of November.",
+                "Sarah is responsible for the technical specification, due this Friday. Mike will handle the backend API endpoints by next week.",
+                "The approved budget includes 30% for marketing and $5000 for new servers.",
+                "The next follow-up meeting is scheduled for Monday to review progress.",
+                "I can help you with any questions about the meeting. What would you like to know?"
+            ]
+        };
+
+        // Functions
         function setLanguage(lang) {
             currentLang = lang;
             const texts = i18n[lang];
-            
+
             Object.keys(texts).forEach(key => {
                 const element = document.getElementById(key);
                 if (element) {
-                    if (key === 'heroTitle') {
-                        element.innerHTML = texts[key];
-                    } else {
-                        element.textContent = texts[key];
-                    }
+                    element.textContent = texts[key];
                 }
             });
 
             document.querySelectorAll('.lang-btn').forEach(btn => {
-                btn.classList.remove('active');
+                btn.classList.toggle('active', btn.dataset.lang === lang);
             });
-            event.target.classList.add('active');
 
-            localStorage.setItem('preferredLanguage', lang);
+            localStorage.setItem('meeting-lang', lang);
+            renderTemplates();
+
+            if (currentResult) {
+                renderResult(currentResult);
+            }
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const saved = localStorage.getItem('preferredLanguage');
-            if (saved && i18n[saved]) {
-                const btn = document.querySelector(`.lang-btn[onclick="setLanguage('${saved}')"]`);
-                if (btn) btn.click();
-            }
-        });
+        function getText(key) {
+            return i18n[currentLang][key] || i18n['en'][key] || key;
+        }
 
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        async function toggleConnection() {
+            const url = document.getElementById('apiUrl').value.trim();
+
+            if (isConnected) {
+                isConnected = false;
+                apiBaseUrl = '';
+                localStorage.removeItem('meeting-api');
+                updateConnectionStatus();
+                return;
+            }
+
+            if (!url) {
+                showNotification('Please enter API URL', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${url}/api/health`);
+                if (response.ok) {
+                    isConnected = true;
+                    apiBaseUrl = url;
+                    localStorage.setItem('meeting-api', url);
+                    showNotification(getText('connectionSuccess'), 'success');
+                } else {
+                    throw new Error('Health check failed');
                 }
-            });
+            } catch (error) {
+                isConnected = false;
+                showNotification(getText('connectionFailed'), 'error');
+            }
+
+            updateConnectionStatus();
+        }
+
+        function updateConnectionStatus() {
+            const dot = document.getElementById('statusDot');
+            const text = document.getElementById('statusText');
+            const btn = document.getElementById('connectBtn');
+            const btnText = document.getElementById('connectBtnText');
+
+            if (isConnected) {
+                dot.className = 'status-dot connected';
+                text.textContent = getText('statusConnected');
+                btn.className = 'btn btn-danger';
+                btnText.textContent = getText('disconnectBtnText');
+            } else {
+                dot.className = 'status-dot simulation';
+                text.textContent = getText('statusSimulation');
+                btn.className = 'btn btn-primary';
+                btnText.textContent = getText('connectBtnText');
+            }
+        }
+
+        function showInputTab(tabName) {
+            document.querySelectorAll('.panel:first-child .tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.panel:first-child .tab').forEach(t => t.classList.remove('active'));
+
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            document.querySelector(`.panel:first-child .tab[data-tab="${tabName}"]`).classList.add('active');
+        }
+
+        function showResultTab(tabName) {
+            document.querySelectorAll('.panel:last-child .tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.panel:last-child .tab').forEach(t => t.classList.remove('active'));
+
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            document.querySelector(`.panel:last-child .tab[data-tab="${tabName}"]`).classList.add('active');
+        }
+
+        function renderTemplates() {
+            const container = document.getElementById('templatesList');
+            container.innerHTML = templates.map(t => `
+                <div class="template-card" onclick="useTemplate('${t.id}', ${t.duration})">
+                    <div class="template-card-header">
+                        <span class="template-card-icon">${t.icon}</span>
+                        <div>
+                            <div class="template-card-title">${t.name}</div>
+                            <div class="template-card-duration">${t.duration} min</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function useTemplate(type, duration) {
+            document.getElementById('agendaMeetingType').value = type;
+            document.getElementById('durationSelect').value = duration;
+            showInputTab('agenda');
+        }
+
+        async function summarizeMeeting() {
+            const transcript = document.getElementById('transcriptInput').value.trim();
+            const meetingType = document.getElementById('meetingTypeSelect').value;
+            const participants = document.getElementById('participantsInput').value.split(',').map(p => p.trim()).filter(p => p);
+
+            if (!transcript) {
+                showNotification('Please enter meeting transcript', 'error');
+                return;
+            }
+
+            showLoading();
+
+            try {
+                let result;
+                if (isConnected) {
+                    const response = await fetch(`${apiBaseUrl}/api/summarize`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            transcript,
+                            meeting_type: meetingType,
+                            participants
+                        })
+                    });
+                    result = await response.json();
+                } else {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                    result = simulationResponses.summarize;
+                }
+
+                currentResult = { type: 'summary', data: result };
+                renderResult(currentResult);
+                addToHistory('summary', result.title || 'Meeting Summary', transcript.substring(0, 100));
+                showResultTab('result');
+            } catch (error) {
+                showNotification('Error summarizing meeting: ' + error.message, 'error');
+            }
+        }
+
+        async function generateAgenda() {
+            const topic = document.getElementById('topicInput').value.trim();
+            const meetingType = document.getElementById('agendaMeetingType').value;
+            const duration = parseInt(document.getElementById('durationSelect').value);
+            const participants = document.getElementById('agendaParticipants').value.split(',').map(p => p.trim()).filter(p => p);
+            const goals = document.getElementById('goalsInput').value.split('\n').map(g => g.trim()).filter(g => g);
+
+            if (!topic) {
+                showNotification('Please enter meeting topic', 'error');
+                return;
+            }
+
+            showLoading();
+
+            try {
+                let result;
+                if (isConnected) {
+                    const response = await fetch(`${apiBaseUrl}/api/agenda`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            topic,
+                            meeting_type: meetingType,
+                            duration,
+                            participants,
+                            goals
+                        })
+                    });
+                    result = await response.json();
+                } else {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                    result = { ...simulationResponses.agenda, title: topic };
+                }
+
+                currentResult = { type: 'agenda', data: result };
+                renderResult(currentResult);
+                addToHistory('agenda', result.title || topic, `${duration} min meeting`);
+                showResultTab('result');
+            } catch (error) {
+                showNotification('Error generating agenda: ' + error.message, 'error');
+            }
+        }
+
+        function showLoading() {
+            document.getElementById('resultContent').innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                </div>
+            `;
+        }
+
+        function renderResult(result) {
+            const container = document.getElementById('resultContent');
+
+            if (result.type === 'summary') {
+                const data = result.data;
+                container.innerHTML = `
+                    <div class="result-container">
+                        <div class="result-header">
+                            <div class="result-title">
+                                <span>📝</span>
+                                ${data.title || getText('summaryTitle')}
+                            </div>
+                            <div class="result-actions">
+                                <button class="btn btn-secondary" onclick="copyResult()">📋 Copy</button>
+                                <button class="btn btn-secondary" onclick="exportMarkdown()">📄 Export</button>
+                            </div>
+                        </div>
+
+                        ${data.summary ? `
+                        <div class="result-section">
+                            <h4>📄 ${getText('summaryTitle')}</h4>
+                            <p>${data.summary}</p>
+                        </div>
+                        ` : ''}
+
+                        ${data.key_points && data.key_points.length ? `
+                        <div class="result-section">
+                            <h4>💡 ${getText('keyPoints')}</h4>
+                            <ul class="key-points-list">
+                                ${data.key_points.map(p => `<li>${p}</li>`).join('')}
+                            </ul>
+                        </div>
+                        ` : ''}
+
+                        ${data.decisions && data.decisions.length ? `
+                        <div class="result-section">
+                            <h4>✅ ${getText('decisions')}</h4>
+                            <ul class="decisions-list">
+                                ${data.decisions.map(d => `<li>${d}</li>`).join('')}
+                            </ul>
+                        </div>
+                        ` : ''}
+
+                        ${data.action_items && data.action_items.length ? `
+                        <div class="result-section">
+                            <h4>📋 ${getText('actionItems')}</h4>
+                            ${data.action_items.map(item => `
+                                <div class="action-item">
+                                    <div class="action-item-header">
+                                        <span class="action-item-title">${item.task}</span>
+                                        <span class="priority-badge priority-${item.priority}">${getText(item.priority)}</span>
+                                    </div>
+                                    <div class="action-item-meta">
+                                        <span>👤 ${item.assignee}</span>
+                                        <span>📅 ${item.due_date}</span>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        ` : ''}
+
+                        ${data.next_steps && data.next_steps.length ? `
+                        <div class="result-section">
+                            <h4>➡️ ${getText('nextSteps')}</h4>
+                            <ul class="key-points-list">
+                                ${data.next_steps.map(s => `<li>${s}</li>`).join('')}
+                            </ul>
+                        </div>
+                        ` : ''}
+                    </div>
+                `;
+            } else if (result.type === 'agenda') {
+                const data = result.data;
+                container.innerHTML = `
+                    <div class="result-container">
+                        <div class="result-header">
+                            <div class="result-title">
+                                <span>📋</span>
+                                ${data.title || getText('agendaTitle')}
+                            </div>
+                            <div class="result-actions">
+                                <button class="btn btn-secondary" onclick="copyResult()">📋 Copy</button>
+                                <button class="btn btn-secondary" onclick="exportMarkdown()">📄 Export</button>
+                            </div>
+                        </div>
+
+                        ${data.objectives && data.objectives.length ? `
+                        <div class="result-section">
+                            <h4>🎯 ${getText('objectives')}</h4>
+                            <ul class="key-points-list">
+                                ${data.objectives.map(o => `<li>${o}</li>`).join('')}
+                            </ul>
+                        </div>
+                        ` : ''}
+
+                        ${data.agenda_items && data.agenda_items.length ? `
+                        <div class="result-section">
+                            <h4>📋 ${getText('agendaItems')}</h4>
+                            ${data.agenda_items.map(item => `
+                                <div class="agenda-item">
+                                    <div class="agenda-item-header">
+                                        <span class="agenda-item-title">${item.title}</span>
+                                        <span class="agenda-item-time">${item.time}</span>
+                                    </div>
+                                    <p class="agenda-item-desc">${item.description}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                        ` : ''}
+
+                        ${data.preparation_items && data.preparation_items.length ? `
+                        <div class="result-section">
+                            <h4>📝 ${getText('preparationItems')}</h4>
+                            <ul class="key-points-list">
+                                ${data.preparation_items.map(p => `<li>${p}</li>`).join('')}
+                            </ul>
+                        </div>
+                        ` : ''}
+                    </div>
+                `;
+            }
+        }
+
+        function copyResult() {
+            if (!currentResult) return;
+
+            let text = '';
+            const data = currentResult.data;
+
+            if (currentResult.type === 'summary') {
+                text = `# ${data.title || 'Meeting Summary'}\n\n`;
+                if (data.summary) text += `## Summary\n${data.summary}\n\n`;
+                if (data.key_points) text += `## Key Points\n${data.key_points.map(p => `- ${p}`).join('\n')}\n\n`;
+                if (data.decisions) text += `## Decisions\n${data.decisions.map(d => `- ${d}`).join('\n')}\n\n`;
+                if (data.action_items) {
+                    text += `## Action Items\n`;
+                    data.action_items.forEach(item => {
+                        text += `- [ ] ${item.task} (@${item.assignee}, Due: ${item.due_date})\n`;
+                    });
+                }
+            } else if (currentResult.type === 'agenda') {
+                text = `# ${data.title || 'Meeting Agenda'}\n\n`;
+                if (data.objectives) text += `## Objectives\n${data.objectives.map(o => `- ${o}`).join('\n')}\n\n`;
+                if (data.agenda_items) {
+                    text += `## Agenda\n`;
+                    data.agenda_items.forEach(item => {
+                        text += `### ${item.time} - ${item.title}\n${item.description}\n\n`;
+                    });
+                }
+            }
+
+            navigator.clipboard.writeText(text);
+            showNotification(getText('copySuccess'), 'success');
+        }
+
+        function exportMarkdown() {
+            if (!currentResult) return;
+
+            let text = '';
+            const data = currentResult.data;
+            const filename = (data.title || 'meeting').replace(/\s+/g, '_').toLowerCase();
+
+            if (currentResult.type === 'summary') {
+                text = `# ${data.title || 'Meeting Summary'}\n\n`;
+                if (data.summary) text += `## Summary\n${data.summary}\n\n`;
+                if (data.key_points) text += `## Key Points\n${data.key_points.map(p => `- ${p}`).join('\n')}\n\n`;
+                if (data.decisions) text += `## Decisions\n${data.decisions.map(d => `- ${d}`).join('\n')}\n\n`;
+                if (data.action_items) {
+                    text += `## Action Items\n`;
+                    data.action_items.forEach(item => {
+                        text += `- [ ] **${item.task}**\n  - Assignee: ${item.assignee}\n  - Due: ${item.due_date}\n  - Priority: ${item.priority}\n\n`;
+                    });
+                }
+                if (data.next_steps) text += `## Next Steps\n${data.next_steps.map(s => `- ${s}`).join('\n')}\n`;
+            } else if (currentResult.type === 'agenda') {
+                text = `# ${data.title || 'Meeting Agenda'}\n\n`;
+                if (data.objectives) text += `## Objectives\n${data.objectives.map(o => `- ${o}`).join('\n')}\n\n`;
+                if (data.agenda_items) {
+                    text += `## Agenda\n`;
+                    data.agenda_items.forEach(item => {
+                        text += `### ${item.time} - ${item.title}\n${item.description}\n\n`;
+                    });
+                }
+                if (data.preparation_items) text += `## Preparation\n${data.preparation_items.map(p => `- ${p}`).join('\n')}\n`;
+            }
+
+            const blob = new Blob([text], { type: 'text/markdown' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${filename}.md`;
+            a.click();
+            URL.revokeObjectURL(url);
+
+            showNotification(getText('exportSuccess'), 'success');
+        }
+
+        function handleChatKeypress(event) {
+            if (event.key === 'Enter') {
+                sendChatMessage();
+            }
+        }
+
+        async function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+
+            if (!message) return;
+
+            input.value = '';
+            addChatMessage(message, 'user');
+
+            try {
+                let response;
+                if (isConnected) {
+                    const context = currentResult ? JSON.stringify(currentResult.data) : '';
+                    const res = await fetch(`${apiBaseUrl}/api/chat`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            message,
+                            context,
+                            history: chatHistory.map(m => ({ role: m.role, content: m.content })),
+                            language: currentLang
+                        })
+                    });
+                    const data = await res.json();
+                    response = data.response;
+                } else {
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    const responses = simulationResponses.chat;
+                    response = responses[Math.floor(Math.random() * responses.length)];
+                }
+
+                addChatMessage(response, 'assistant');
+            } catch (error) {
+                addChatMessage('Sorry, I encountered an error. Please try again.', 'assistant');
+            }
+        }
+
+        function addChatMessage(content, role) {
+            chatHistory.push({ role, content });
+
+            const container = document.getElementById('chatMessages');
+            const messageEl = document.createElement('div');
+            messageEl.className = `chat-message ${role}`;
+            messageEl.textContent = content;
+            container.appendChild(messageEl);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function addToHistory(type, title, preview) {
+            const item = {
+                type,
+                title,
+                preview,
+                timestamp: new Date().toISOString(),
+                data: currentResult.data
+            };
+
+            analysisHistory.unshift(item);
+            if (analysisHistory.length > 20) {
+                analysisHistory.pop();
+            }
+
+            localStorage.setItem('meeting-history', JSON.stringify(analysisHistory));
+            renderHistory();
+        }
+
+        function renderHistory() {
+            const container = document.getElementById('historyList');
+
+            if (analysisHistory.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📜</div>
+                        <h3 id="historyEmptyTitle">${getText('historyEmptyTitle')}</h3>
+                        <p id="historyEmptyDesc">${getText('historyEmptyDesc')}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = analysisHistory.map((item, index) => `
+                <div class="history-item" onclick="loadHistoryItem(${index})">
+                    <div class="history-item-header">
+                        <span class="history-item-title">${item.type === 'summary' ? '📝' : '📋'} ${item.title}</span>
+                        <span class="history-item-date">${new Date(item.timestamp).toLocaleDateString()}</span>
+                    </div>
+                    <p class="history-item-preview">${item.preview}...</p>
+                </div>
+            `).join('');
+        }
+
+        function loadHistoryItem(index) {
+            const item = analysisHistory[index];
+            currentResult = { type: item.type, data: item.data };
+            renderResult(currentResult);
+            showResultTab('result');
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load saved settings
+            const savedLang = localStorage.getItem('meeting-lang');
+            if (savedLang && i18n[savedLang]) {
+                setLanguage(savedLang);
+            }
+
+            const savedApi = localStorage.getItem('meeting-api');
+            if (savedApi) {
+                document.getElementById('apiUrl').value = savedApi;
+            }
+
+            const savedHistory = localStorage.getItem('meeting-history');
+            if (savedHistory) {
+                try {
+                    analysisHistory = JSON.parse(savedHistory);
+                } catch (e) {}
+            }
+
+            renderTemplates();
+            renderHistory();
+            updateConnectionStatus();
         });
     </script>
 </body>
